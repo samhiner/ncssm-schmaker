@@ -1,0 +1,143 @@
+<!--
+Make a warning if all of your rows didn't compute where it tells you which rows failed so you can try again if you want. Maybe put error icon next to bad rows.
+Delete last row button?
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NCSSM Schmaker 2019-2020</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<script src='index.js'></script>
+</head>
+<body>
+	Currently only tri 1. All that matters is you include the codes in the first part of the input but as long as you select classes from the popup list you don't have to worry about it.
+	<table border='1'><tbody id='mainTable'>
+		<tr><td>
+			<input list='browsers' placeholder='Search for a class name or code.' name='classChoice'>
+			<datalist id='browsers'>
+					<!--tri 1 course options-->
+					<!--I used a script to make this I didn't do it by hand-->
+					<option value="AR306 Darkroom Photography">
+					<option value="AR320 Drawing">
+					<option value="AR322 Painting">
+					<option value="AR324 Art and Technology">
+					<option value="AS403a Writing & Amer Studies">
+					<option value="AS405a American Studies">
+					<option value="BI352 Anatomy & Physiology I">
+					<option value="BI358 Classical Genetics (*M*)">
+					<option value="BI360 Molecular Genetics (*M*)">
+					<option value="BI364 Developmental Biology (*R*)">
+					<option value="BI374 Ecology (*R*)">
+					<option value="BI390 Res Exp-Biology (*R*)">
+					<option value="BI404 Climate Change Biology (*M*)">
+					<option value="BI434 AP Biology (I) (*R*)">
+					<option value="BI446 Research in Biology III (*R*)">
+					<option value="CH305a Chemistry by Inquiry">
+					<option value="CH353a Chemistry">
+					<option value="CH401a AP Chemistry (I)">
+					<option value="CH405 AP Chemistry (Adv I)">
+					<option value="CH410 Organic Chemistry">
+					<option value="CH418 Biochemistry (*R*)">
+					<option value="CH446 Research Chem III (*R*)">
+					<option value="CN305a Introductory Chinese">
+					<option value="CN307a Intermediate Chinese">
+					<option value="CN354 Advanced Chinese I">
+					<option value="CN404 Readings in Chinese/Topics I">
+					<option value="CN454 Advanced Readings in Chinese/Topics I">
+					<option value="CS362 Connected Computing">
+					<option value="CS402 Web Development">
+					<option value="CS406 Scientific Programming">
+					<option value="CS422 Databases">
+					<option value="CS424 Procedural Programming">
+					<option value="CS434 C">
+					<option value="DR302 Theater Perf Wrkshp">
+					<option value="EE316 Introductory Robotics">
+					<option value="EE318 Fundamentals of Engineering">
+					<option value="EE402 Electrical Engineering">
+					<option value="EE404 Architecture">
+					<option value="EE408 Biomedical Engineering">
+					<option value="EE418 Environmental Engineering">
+					<option value="EN400 East-West Studies I">
+					<option value="EN412 Southern Lit/Culture">
+					<option value="EN416 Asia I">
+					<option value="EN422 Philos/Lit in 20th Century">
+					<option value="EN424 Africa I">
+					<option value="EN436 Western Euro Cultural Stu I">
+					<option value="EN442 Western Civilization: WRRD I">
+					<option value="EN448 Topics in Literature I">
+					<option value="EN460 STEM and the Stage">
+					<option value="EN490 Res in the Humanities I">
+					<option value="FR305a Introductory French">
+					<option value="FR307a Intermediate French">
+					<option value="FR354 Advanced French I">
+					<option value="IE404 Engage to Impact">
+					<option value="IE405a Mentorship-Senior Research">
+					<option value="IE446 Research Computational Sci III">
+					<option value="IE449a Entrepreneurship">
+					<option value="JA305a Introductory Japanese">
+					<option value="JA307a Intermediate Japanese">
+					<option value="LA305a Introductory Latin">
+					<option value="LA307a Intermediate Latin">
+					<option value="LA410 Advanced Latin Prose I">
+					<option value="MA355a Precalculus & Modeling">
+					<option value="MA360 Investigations in Calculus I">
+					<option value="MA404 AP Statistics (I)">
+					<option value="MA410 AP Calc AB (Adv Topics I)">
+					<option value="MA430 AP Calc BC (Adv Topics I)">
+					<option value="MA434 AP Calc BC (Adv Topics III)">
+					<option value="MA440 AP Statistics (Adv Topics I)">
+					<option value="MA454 Modeling/Differential Eq's">
+					<option value="MA466 Graph Theory/Intro Proof">
+					<option value="MA470 Mathematical Modeling">
+					<option value="MA474 Research in Mathematics II">
+					<option value="MS312 Classical Piano and Guitar">
+					<option value="MS322 Music Theory and Composition">
+					<option value="MS350 Jazz Perf Workshop">
+					<option value="MU302 Chorale">
+					<option value="MU360 Wind Ensemble">
+					<option value="MU370 Orchestra">
+					<option value="PA104 Archery">
+					<option value="PA112 Tennis">
+					<option value="PA118 Racquetball">
+					<option value="PA136 Hiking">
+					<option value="PA140 Self Defense">
+					<option value="PA142 Weight Trng/Sprts & Fitness">
+					<option value="PA146 Pilates & Yoga">
+					<option value="PA162 Rock Wall Climbing">
+					<option value="PH353a Physics">
+					<option value="PH401a Physics with Advanced Topics (*M*)">
+					<option value="PH404 AP Physics C: Mech (I)">
+					<option value="PH414 Advanced Physics Problem Solving">
+					<option value="PH416 Quantum Mechanics">
+					<option value="PH418 Astrophysics">
+					<option value="PH446 Research in Physics III (*R*)">
+					<option value="RE102 Cornerstone">
+					<option value="RE110 Exploring MultiCultural Amer">
+					<option value="RE112 Public Speaking">
+					<option value="RE116 Marketing You">
+					<option value="RE120 Financial Planning">
+					<option value="SE352 Emergency Care I">
+					<option value="SEM002 Introduction to Pre-Calculus Seminar">
+					<option value="SEM004 Introduction to Calculus Seminar">
+					<option value="SEM006 Calculus Capstone Seminar">
+					<option value="SP305a Introductory Spanish">
+					<option value="SP307a Intermediate Spanish">
+					<option value="SP354 Advanced Spanish I">
+					<option value="SP404 Rdgs in Spanish/Topics I">
+					<option value="SS368 Sociology">
+					<option value="SS402 AP Microeconomics">
+					<option value="SS406 Intro Psychology">
+					<option value="VS102 Men's Soccer">
+					<option value="VS104 Women's Volleyball">
+					<option value="VS106 Women's Tennis">
+					<option value="VS108 Cross-Country">
+					<option value="VS110 Competitive Cheer">
+					<option value="VS112 Women's Golf">
+			</datalist>
+		</td></tr>
+		<tr id='tableControls'><td>
+			<button onclick='addRow()'>Add a new row.</button>
+		</td></tr>
+	</tbody></table>
+</body>
+</html>
