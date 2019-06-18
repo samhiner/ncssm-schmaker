@@ -37,7 +37,19 @@ function deleteRow() {
 	}
 }
 
-function addResults() {
-	//<td style='background-color: lightgreen;'>Conflict</td>
-	//<td style='background-color: #ee9090;'>No Conflict</td>
+function addResults(conflicts/*, tri1Times, tri2Times, Tri3Times*/) {
+	conflictOutputs = document.getElementById('conflictArea').childNodes;
+	for (var x = 0; x < 3; x++) {
+		if (conflicts[x] == "true") {
+			// * 2 + 1 factors in for text elements
+			conflictOutputs[x * 2 + 1].style.backgroundColor = 'lightgreen';
+			conflictOutputs[x * 2 + 1].innerText = 'No Conflict';
+		} else if (conflicts[x] == "false") {
+			conflictOutputs[x * 2 + 1].style.backgroundColor = '#ee9090';
+			conflictOutputs[x * 2 + 1].innerText = 'Conflict';
+		} else {
+			conflictOutputs[x * 2 + 1].style.backgroundColor = '#eed390';
+			conflictOutputs[x * 2 + 1].innerText = 'Conflict Unknown';
+		}
+	}
 }
