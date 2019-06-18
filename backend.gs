@@ -2,12 +2,17 @@ SHEET_ID = '1Wv4XzU5aIEemGKYjoCBuCKjNQEIcaHvNHPspVl7hxkw'
 DIGITS = ['1', '2', '3', '4', '5'];
 
 function doGet(request) {
-  var classes = request['parameter']['classes'].split(';')
-  //var classes = ['CH446', 'DR302', 'IE446'];
-  
+  var conflictBools = [];
+  for (var x = 1; x <= 3; x++) {
+    conflictBools.push(scheduleHandler(request['parameter']['t' + String(x)].split(';').slice(0, -1), x));
+  }
+  return ContentService.createTextOutput('console.log(' + conflictBools + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
+function scheduleHandler(classes, tri) {
   var spreadsheet = SpreadsheetApp.openById(SHEET_ID)
   //the 0 index is the first sheet, or tri 1
-  var sheet = spreadsheet.getSheets()[0];
+  var sheet = spreadsheet.getSheets()[tri - 1];
   var data = sheet.getDataRange().getValues();
   
   var allClassTimes = {};
@@ -20,8 +25,7 @@ function doGet(request) {
     if (classes.indexOf(classCode) != -1) {
       allClassTimes[classCode].push(data[row][1])
     }
-  }
-
+  }  
   //conflict calculator
   /*TODO if you want1: fill in required spots for 1-class courses
     2: lay out all options for remaining classes and if you have an open class with no potential conflicts resolve yourself there
@@ -37,10 +41,8 @@ function doGet(request) {
   var calendar = {'A': [false, false, false, false, false], 'B': [false, false, false, false, false], 'C': [false, false, false, false, false], 'D': [false, false, false, false, false], 'E': [false, false, false, false, false], 'F': [false, false, false, false, false], 'G': [false, false, false, false, false], 'H': [false, false, false, false], 'I': [false, false, false, false]};
   //Logger.log(ContentService.createTextOutput(conflictCalculator(classTimesList, calendar)))
   
-  return ContentService.createTextOutput('console.log(' + conflictCalculator(classTimesList, calendar) + ');')
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  return conflictCalculator(classTimesList, calendar);
 }
-
 
 function conflictCalculator(allClassTimes, calendar) {
 

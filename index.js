@@ -3,25 +3,36 @@ function addRow() {
 	var table = document.getElementById('mainTable')
 
 	var cloneRow = firstRow.cloneNode(true);
-	cloneRow.firstElementChild.firstElementChild.value = '';
+	cloneRow.children[0].firstElementChild.value = '';
+	cloneRow.children[1].firstElementChild.value = '';
+	cloneRow.children[2].firstElementChild.value = '';
 	table.insertBefore(cloneRow, document.getElementById('tableControls'))
+	//console.log(cloneRow.children[1].first)
 }
 
 function getConflicts() {
-	var classChoices = '' 
-	var classChoiceInputs = document.getElementsByName('classChoice');
-	for (var x = 0; x < classChoiceInputs.length; x++) {
-		//get the first word- the class code- of each selected class
-		classChoices += classChoiceInputs[x].value.split(' ')[0] + ';'
+	var classChoices = []
+	for (var tri = 1; tri <= 3; tri++) {
+		var triChoices = '' 
+		var classChoiceInputs = document.getElementsByName('tri' + tri + 'Choice');
+		for (var x = 0; x < classChoiceInputs.length; x++) {
+			//get the first word- the class code- of each selected class
+			if (classChoiceInputs[x].value != '') {
+				triChoices += classChoiceInputs[x].value.split(' ')[0] + ';'
+			}
+		}
+		classChoices.push(triChoices)
 	}
 
-
 	$.ajax({
-		url: 'https://script.google.com/macros/s/AKfycbwHjug6DYFyefmbRotIRbnTktIBCUGFXf0wBq9krkbxcxU0Dys0/exec?classes=' + classChoices,
-		dataType: 'jsonp',
-		success: function(result) {
-			alert(result)
-			console.log(result)
-		}
+		url: 'https://script.google.com/macros/s/AKfycbwHjug6DYFyefmbRotIRbnTktIBCUGFXf0wBq9krkbxcxU0Dys0/exec?t1=' + classChoices[0] + '&t2=' + classChoices[1] + '&t3=' + classChoices[2],
+		dataType: 'jsonp'
 	});
+}
+
+function deleteRow() {
+	var tableControls = document.getElementById('tableControls')
+	if (tableControls.previousElementSibling.previousElementSibling != null) {
+		tableControls.parentNode.removeChild(tableControls.previousElementSibling);
+	}
 }
