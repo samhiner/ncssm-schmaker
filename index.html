@@ -2,7 +2,6 @@
 Make a warning if all of your rows didn't compute where it tells you which rows failed so you can try again if you want. Maybe put error icon next to bad rows.
 Delete last row button?
 Make it look way nicer
-	table * width being 100% makes the input box bleed over border. Fix this and redo the border.
 put the backend on my smath acct and use the live spreadsheet
 bugtest a lot by writing a script to test many class combos (every class at least once) and looking at results
 explain how your classes conflict
@@ -10,6 +9,7 @@ get other stats like how many minutes a weeks, meetings a week, gpa, etc. And on
 consolidate everything into one ajax request
 abstract the massive options list to work with any course meeting patters spreadsheet
 make buttons not look like garbo on phone
+//keep a window variable that has question answers to prevent needing to re-answer, but also let people go back on questions, and save data across sessions
 -->
 <!DOCTYPE html>
 <html>
@@ -30,17 +30,17 @@ make buttons not look like garbo on phone
 		table * {
 			width: 100%;
 		}
-		td {
+		table td {
 			height: 5vh;
 			width: 33%;
 		}
-		td * {
+		.entryTable td * {
 			height: 5vh;
 			font-size: 3vh;
 			width: calc(100% - 4px);
 		}
-		td button {
-			width: 100%; /*as403x2 bi352 bi358 bi410 ar320*/
+		.entryTable td button {
+			width: 100%;
 		}
 		.banner {
 			position: absolute;
@@ -49,13 +49,23 @@ make buttons not look like garbo on phone
 			top: 0;
 			max-height: 8vh;
 			margin: 0 0 0 0;
-			background-color: lightgrey;
+			background-color: darkgrey;
 			font-size: 4vh;
 			padding-top: 2vh;
 			padding-bottom: 2vh;
 		}
 		h1 {
 			font-size: 3vh;
+		}
+		.results {
+			width: 90%;
+			/*background-color: WhiteSmoke;*/
+		}
+		.screenHalf {
+			width: 50%;
+		}
+		.stats {
+			text-align: left;
 		}
 	</style>
 </head>
@@ -65,7 +75,7 @@ make buttons not look like garbo on phone
 	</div>
 	<h1>Enter Your Courses</h1>
 	All that matters is you include the codes in the first part of the input but as long as you select classes from the popup list you don't have to worry about it.<br><br>
-	<table border='1' align='center'><tbody id='mainTable'>
+	<table border='1' align='center' class='entryTable'><tbody id='mainTable'>
 		<tr>
 			<td>
 				<input list='tri1Classes' placeholder='Enter a class name or code.' name='tri1Choice'>
@@ -100,7 +110,39 @@ make buttons not look like garbo on phone
 			</td>
 		</tr>
 	</tbody></table><br><br>
-	<hr>
-	<h1>Results</h1>
+	
+	<hr style='margin-bottom: 0.7em'>
+
+	<div style='font-size: 3vh; font-weight: bold;'>Your Results</div>
+
+	<table align='center' class='results'><tbody>
+		<tr>
+			<td class='screenHalf'>
+				<br><table border='1' align='center'><tbody>
+					<tr style='background-color: lightgrey'>
+						<td>Trimester 1</td>
+						<td>Trimester 2</td>
+						<td>Trimester 3</td>
+					</tr>
+					<tr>
+						<td style='background-color: #eed390'>Conflict Unknown</td>
+						<td style='background-color: #eed390'>Conflict Unknown</td>
+						<td style='background-color: #eed390'>Conflict Unknown</td>
+					</tr>
+				</table>
+				<div class='stats'><br>
+					Number of Periods Each Week
+					<span style='float:right; display: block;'>90</span><br><br>
+					Time Spent in Class Each Week<br><br>
+					<details>
+						<summary>Average GPA</summary>
+					</details>
+				</div>
+			</td>
+			<td class='screenHalf'><br>
+				x
+			</td>
+		</tr>
+	</tbody></table>
 </body>
 </html>

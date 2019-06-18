@@ -36,3 +36,8 @@ function deleteRow() {
 		tableControls.parentNode.removeChild(tableControls.previousElementSibling);
 	}
 }
+
+function addResults() {
+	//<td style='background-color: lightgreen;'>Conflict</td>
+	//<td style='background-color: #ee9090;'>No Conflict</td>
+}
