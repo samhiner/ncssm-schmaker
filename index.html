@@ -24,19 +24,19 @@ make buttons not look like garbo on phone
 			text-align: center;
 			font-family: 'Roboto', sans-serif;
 		}
-		table {
-			width: 80%;
+		.entryTable {
+			width: 70%;
 		}
-		table * {
+		.entryTable *, .conflictTable {
 			width: 100%;
 		}
-		table td {
-			height: 5vh;
+		.entryTable td, .conflictTable td {
+			height: 4vh;
 			width: 33%;
 		}
 		.entryTable td * {
-			height: 5vh;
-			font-size: 3vh;
+			height: 4vh;
+			font-size: 2vh;
 			width: calc(100% - 4px);
 		}
 		.entryTable td button {
@@ -67,6 +67,18 @@ make buttons not look like garbo on phone
 		.stats {
 			text-align: left;
 		}
+		.dayBlock {
+			width: 3%; /*15 * 0.2 for 5 days*/
+		}
+		.time {
+			width: 7%; /*35 * 0.2 for 5 days*/
+		}
+		.calendar td {
+			height: 3vh;
+		}
+		.screenHalf {
+			vertical-align: top;
+		}
 	</style>
 </head>
 <body>
@@ -74,7 +86,7 @@ make buttons not look like garbo on phone
 		<b>NCSSM Schmaker</b>
 	</div>
 	<h1>Enter Your Courses</h1>
-	All that matters is you include the codes in the first part of the input but as long as you select classes from the popup list you don't have to worry about it.<br><br>
+	Each column represents a trimester. Add new rows and select all of your courses. Then click "Calculate" to get your results.<br><br>
 	<table border='1' align='center' class='entryTable'><tbody id='mainTable'>
 		<tr>
 			<td>
@@ -118,7 +130,7 @@ make buttons not look like garbo on phone
 	<table align='center' class='results'><tbody>
 		<tr>
 			<td class='screenHalf'>
-				<br><table border='1' align='center'><tbody>
+				<br><table border='1' align='center' class='conflictTable'><tbody>
 					<tr style='background-color: lightgrey'>
 						<td>Trimester 1</td>
 						<td>Trimester 2</td>
@@ -132,15 +144,209 @@ make buttons not look like garbo on phone
 				</table>
 				<div class='stats'><br>
 					Number of Periods Each Week
-					<span style='float:right; display: block;'>90</span><br><br>
+					<span style='float:right;'>90</span><br><br>
 					Time Spent in Class Each Week<br><br>
-					<details>
+					<details> <!--maybe don't do details. just have it open-->
 						<summary>Average GPA</summary>
 					</details>
 				</div>
 			</td>
 			<td class='screenHalf'><br>
-				x
+				<table border='1' align='center' class='calendar'><tbody>
+					<tr>
+						<td colspan='3'>Monday</td>
+						<td colspan='3'>Tuesday</td>
+						<td colspan='3'>Wednesday</td>
+						<td colspan='3'>Thursday</td>
+						<td colspan='3'>Friday</td>
+					</tr>
+					<tr>
+						<td colspan='2'>Time</td>
+						<td></td>
+						<td colspan='2'>Time</td>
+						<td></td>
+						<td colspan='2'>Time</td>
+						<td></td>
+						<td colspan='2'>Time</td>
+						<td></td>
+						<td colspan='2'>Time</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class='dayBlock'>1</td>
+						<td class='time'>8:00 to 8:50</td>
+						<td class='weekBlock'>A1</td>
+						
+						<td class='dayBlock'>1</td>
+						<td class='time'>8:00 to 8:50</td>
+						<td class='weekBlock'>C2</td>
+						
+						<td class='dayBlock'>1</td>
+						<td class='time'>8:00 to 8:50</td>
+						<td class='weekBlock'>B3</td>
+						
+						<td class='dayBlock'>1</td>
+						<td class='time'>8:00 to 8:50</td>
+						<td class='weekBlock'>D4</td>
+						
+						<td class='dayBlock'>1</td>
+						<td class='time'>8:00 to 8:50</td>
+						<td class='weekBlock'>A5</td>
+					</tr>
+					<tr>
+						<td class='dayBlock'>2</td>
+						<td class='time'>8:55 to 9:45</td>
+						<td class='weekBlock'>B1</td>
+
+						<td class='dayBlock'>2</td>
+						<td class='time'>8:55 to 9:45</td>
+						<td class='weekBlock'>D2</td>
+
+						<td class='dayBlock'>2</td>
+						<td class='time'>8:55 to 9:45</td>
+						<td class='weekBlock'>A3</td>
+
+						<td class='dayBlock'>2</td>
+						<td class='time'>8:55 to 9:45</td>
+						<td class='weekBlock'>C4</td>
+
+						<td class='dayBlock'>2</td>
+						<td class='time'>8:55 to 9:45</td>
+						<td class='weekBlock'>B5</td>
+					</tr>
+					<tr>
+						<td class='dayBlock'>3</td>
+						<td class='time'>9:50 to 10:40</td>
+						<td class='weekBlock'>C1</td>
+
+						<td class='dayBlock'>3</td>
+						<td class='time'>9:50 to 10:40</td>
+						<td class='weekBlock'>B2</td>
+
+						<td class='dayBlock'>3</td>
+						<td class='time'>9:50 to 10:40</td>
+						<td class='weekBlock'>D3</td>
+
+						<td class='dayBlock'>3</td>
+						<td class='time'>9:50 to 10:40</td>
+						<td class='weekBlock'>A4</td>
+
+						<td class='dayBlock'>3</td>
+						<td class='time'>9:50 to 10:40</td>
+						<td class='weekBlock'>C5</td>
+					</tr>
+					<tr>
+						<td class='dayBlock'>4</td>
+						<td class='time'>10:45 to 11:35</td>
+						<td class='weekBlock'>D1</td>
+
+						<td class='dayBlock' rowspan='2'>4</td>
+						<td class='time'>10:45 to 11:35</td>
+						<td class='weekBlock'>A2</td>
+
+						<td class='dayBlock' rowspan='2'>4</td>
+						<td class='time'>10:45 to 11:35</td>
+						<td class='weekBlock'>C3</td>
+
+						<td class='dayBlock' rowspan='2'>4</td>
+						<td class='time'>10:45 to 11:35</td>
+						<td class='weekBlock'>B4</td>
+
+						<td class='dayBlock' rowspan='2'>4</td>
+						<td class='time'>10:45 to 11:35</td>
+						<td class='weekBlock'>D5</td>
+					</tr>
+					<tr>
+						<td class='dayBlock' rowspan='2'></td>
+						<td class='time' rowspan='2'>11:35 to 12:30</td>
+						<td class='weekBlock' rowspan='2'>LUNCH</td>
+
+						<td class='time'>11:35 to 12:30</td>
+						<td class='weekBlock'>A2 LAB</td>
+
+						<td class='time'>11:35 to 12:30</td>
+						<td class='weekBlock'>C3 LAB</td>
+
+						<td class='time'>11:35 to 12:30</td>
+						<td class='weekBlock'>B4 LAB</td>
+
+						<td class='time'>11:35 to 12:30</td>
+						<td class='weekBlock'>D5 LAB</td>
+					</tr>
+					<tr>
+						<td class='dayBlock' rowspan='2'></td>
+						<td class='time' rowspan='2'>11:35 to 12:30</td>
+						<td class='weekBlock' rowspan='2'>LUNCH</td>
+
+						<td class='dayBlock' rowspan='2'></td>
+						<td class='time' rowspan='2'>11:35 to 12:30</td>
+						<td class='weekBlock' rowspan='2'>LUNCH</td>
+
+						<td class='dayBlock' rowspan='2'></td>
+						<td class='time' rowspan='2'>11:35 to 12:30</td>
+						<td class='weekBlock' rowspan='2'>LUNCH</td>
+
+						<td class='dayBlock' rowspan='2'></td>
+						<td class='time' rowspan='2'>11:35 to 12:30</td>
+						<td class='weekBlock' rowspan='2'>LUNCH</td>
+					</tr>
+					<tr>
+						<td class='dayBlock' rowspan='2'></td>
+						<td class='time' rowspan='2'>12:30 to 1:20</td>
+						<td class='weekBlock' rowspan='2'>MEETING</td>
+					</tr>
+					<tr>
+						<td class='dayBlock' rowspan='3'>5</td>
+						<td class='time' rowspan='3'>1:25 to 2:15</td>
+						<td class='weekBlock'>E2 LAB</td>
+
+						<td class='dayBlock' rowspan='2'></td>
+						<td class='time' rowspan='2'>12:30 to 1:20</td>
+						<td class='weekBlock' rowspan='2'>G3</td>
+
+						<td class='dayBlock' rowspan='3'>5</td>
+						<td class='time' rowspan='3'>12:30 to 1:20</td>
+						<td class='weekBlock'>F4 LAB</td>
+
+						<td class='dayBlock' rowspan='3'>5</td>
+						<td class='time' rowspan='3'>12:30 to 1:20</td>
+						<td class='weekBlock'>G5 LAB</td>
+					</tr>
+					<tr>
+						<td class='dayBlock' rowspan='2'>5</td>
+						<td class='time' rowspan='2'>1:25 to 2:15</td>
+						<td class='weekBlock' rowspan='2'>E1</td>
+
+						<td class='weekBlock' rowspan='2'>E2</td>
+
+						<td class='weekBlock' rowspan='2'>F4</td>
+
+						<td class='weekBlock' rowspan='2'>G5</td>
+					</tr>
+					<tr>
+						<td class='dayBlock' rowspan='2'>6</td>
+						<td class='time' rowspan='2'>1:50 to 2:40</td>
+						<td class='weekBlock' rowspan='2'>E3</td>
+					</tr>
+					<tr>
+						<td class='dayBlock'>6</td>
+						<td class='time'>2:20 to 3:10</td>
+						<td class='weekBlock'>F1</td>
+					</tr>
+					<tr>
+						<td colspan='3'></td>
+					</tr>
+					<tr>
+						<td class='dayBlock'>8</td> <!--make long egg-->
+						<td class='time'>6:15 to 7:55</td>
+						<td class='weekBlock'>H1</td>
+					</tr>
+					<tr>
+						<td class='dayBlock'>9</td>
+						<td class='time'>8:05 to 9:45</td>
+						<td class='weekBlock'>I1</td>
+					</tr>
+				</tbody></table>
 			</td>
 		</tr>
 	</tbody></table>
