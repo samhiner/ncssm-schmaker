@@ -11,14 +11,25 @@ function addRow() {
 }
 
 function getConflicts() {
-	var classChoices = []
+	var classChoices = [];
+	window.classNumbers = {'300': 0, '350': 0, '400': 0};
+	var classCode;
 	for (var tri = 1; tri <= 3; tri++) {
-		var triChoices = '' 
+		var triChoices = ''
 		var classChoiceInputs = document.getElementsByName('tri' + tri + 'Choice');
 		for (var x = 0; x < classChoiceInputs.length; x++) {
 			//get the first word- the class code- of each selected class
 			if (classChoiceInputs[x].value != '') {
-				triChoices += classChoiceInputs[x].value.split(' ')[0] + ';'
+				classCode = classChoiceInputs[x].value.split(' ')[0]
+				triChoices += classCode + ';';
+
+				if (classCode[2] == '3' && Number(classCode[3]) < 5) {
+					window.classNumbers['300'] += 1;
+				} else if (classCode[2] == '3') {
+					window.classNumbers['350'] += 1;
+				} else if (classCode[2] == '4') {
+					window.classNumbers['400'] += 1;
+				}
 			}
 		}
 		classChoices.push(triChoices)
@@ -52,4 +63,8 @@ function addResults(conflicts/*, tri1Times, tri2Times, Tri3Times*/) {
 			conflictOutputs[x * 2 + 1].innerText = 'Conflict Unknown';
 		}
 	}
+}
+
+function updateGPA() {
+	
 }

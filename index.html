@@ -176,9 +176,15 @@ try fr406 and varsity sports
 	</tbody></table>
 	<div class='stats'><br><br>
 		Number of Periods Each Week
-		<span style='float:right;'>90</span><br><br>
-		Time Spent in Class Each Week<span style='float:right;'>90</span><br><br>
-		Average GPA<span style='float:right;'>90</span><br><br>
+		<span style='float:right;'><!--N/A-->Under Construction</span><br><br>
+		Time Spent in Class Each Week<span style='float:right;'><!--N/A-->Under Construction</span><br><br>
+		<details>
+			<summary>Average GPA<span style='float:right;'><!--N/A-->Under Construction</span><br><br></summary>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
+		</details>
 	</div><br>
 
 
@@ -404,7 +410,7 @@ try fr406 and varsity sports
 			<td class='weekBlock'>MEETING</td>
 		</tr>
 		<tr>
-			<td colspan='15'></td>
+			<td colspan='15'><div style='font-size: 50px; font-weight: bolder; color: orange;'>Calendar Under Construction</div></td>
 		</tr>
 		<tr>
 			<td class='dayBlock'>8</td>
@@ -450,6 +456,17 @@ try fr406 and varsity sports
 		</tr>
 	</tbody></table>
 
-	<div style='font-size: 50px; font-weight: bolder; color: orange;'>Calendar Coming Soon</div>
+	
+
+	<script>
+		//set up sliders to responsively update when changed
+		var gradeInputs = document.getElementsByName('gradeInput');
+
+		for (var x = 0; x < 4; x++) {
+			gradeInputs[x].oninput = function() {
+				updateGPA();
+			}
+		}
+	</script>
 </body>
 </html>
