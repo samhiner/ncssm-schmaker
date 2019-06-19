@@ -123,6 +123,9 @@ function accessLocalStorage() {
 
 		for (y in triClasses) {
 			triInputs[y].value = $('option[value*="' + triClasses[y] + '"').val();
+			if (triInputs[y].value == 'undefined') {
+				triInputs[y].value = '';
+			}
 		}
 	}
 }
@@ -184,7 +187,14 @@ function setupCalendarQuestions(times) {
 function getCalendarQuestions(answer, num) {
 	if (window.qNum == 1) {
 		var answer = document.querySelector('input[name="scheduleQ"]:checked').value;
-		window.times = window.times[Number(answer.substr(-1)) - 1];
+		var blankConstant = 1;
+		if (document.getElementById('conflictArea').childNodes[1].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
+			blankConstant++;
+			if (document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
+				blankConstant++;
+			}
+		}
+		window.times = window.times[Number(answer.substr(-1)) - blankConstant];
 		window.keyOrder = Object.keys(window.times);
 	} else {
 		var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
