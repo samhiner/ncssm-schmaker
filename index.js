@@ -59,7 +59,7 @@ function getConflicts() {
 }
 
 function deleteRow() {
-	var tableControls = document.getElementById('tableControls')
+	var tableControls = document.getElementById('tableControls');
 	if (tableControls.previousElementSibling.previousElementSibling != null) {
 		tableControls.parentNode.removeChild(tableControls.previousElementSibling);
 	}
@@ -84,7 +84,8 @@ function addResults(conflicts, times) {
 		}
 	}
 
-	perWeekStats(times);
+	perWeekStats(times.slice(0));
+	updateCalendar(times.slice(0));
 }
 
 function updateGPA() {
@@ -104,6 +105,10 @@ function updateGPA() {
 }
 
 function accessLocalStorage() {
+	if (localStorage.getItem('inputtedClasses') == null) {
+		return;
+	}
+
 	var classes = localStorage.getItem('inputtedClasses').split(',')
 	var triClasses;
 	var triInputs;
@@ -159,4 +164,84 @@ function perWeekStats(times) {
 		}
 	}
 	
+}
+
+function updateCalendar(times) {
+	setupCalendarQuestions(times)
+}
+
+function setupCalendarQuestions(times) {
+	document.getElementById('qWrapper').style.display = 'block';
+
+	window.times = times;
+
+	window.qNum = 1;
+	window.colors = []
+	
+	enterQuestion(['Trimester 1', 'Trimester 2', 'Trimester 3'])
+}
+
+function getCalendarQuestions(answer, num) {
+	if (window.qNum == 1) {
+		var answer = document.querySelector('input[name="scheduleQ"]:checked').value;
+		window.times = window.times[Number(answer.substr(-1)) - 1];
+		window.keyOrder = Object.keys(window.times);
+	} else {
+		var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
+		window.times[window.keyOrder[window.qNum - 2]] = selectedOption;
+		window.colors.push(document.getElementById('courseColor').value)
+	}
+	window.qNum++;
+	var nextQArr = window.times[window.keyOrder[window.qNum - 2]]
+	if (nextQArr != undefined) {
+		enterQuestion(nextQArr)
+	} else {
+		endCalendarQuestions();
+		return;
+	}
+}
+
+function enterQuestion(qArr) {
+	var colorPalette = ['#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FF00FF', '#FF8C00', '#00FFFF', '#800000', '#4B0082']
+
+	document.getElementById('qArea').innerHTML = '';
+
+	if (qArr[0] == 'Trimester 1') {
+		document.getElementById('qArea').innerHTML += 'Which trimester do you want a calendar for?<br>';
+	} else {
+		console.log(colorPalette[(x - 2) % colorPalette.length])
+		console.log(colorPalette)
+		console.log(x -2)
+		document.getElementById('qArea').innerHTML += 'Choose when you are taking ' + window.keyOrder[window.qNum - 2] + '. Also, choose the color you want for that course <input id="courseColor" type="color" value="' + colorPalette[(window.qNum - 2) % colorPalette.length] + '"><br>';
+	}
+
+	for (x in qArr) {
+		document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
+	}
+
+	document.getElementById('qArea').innerHTML += '</select>';
+}
+
+function endCalendarQuestions() {
+	document.getElementById('qWrapper').style.display = 'none';
+
+	var currClass;
+	var currBlock;
+	var char;
+	for (x in window.keyOrder) {
+		currClass = window.times[window.keyOrder[x]]
+		for (var y in currClass) {
+			char = currClass[y]
+			if (!isNaN(char) || char == 'L') {
+				console.log(currBlock + char)
+				document.getElementById(currBlock + char).style.backgroundColor = window.colors[x];
+				if (document.getElementById(currBlock + char).previousElementSibling.className == 'time') {
+					document.getElementById(currBlock + char).previousElementSibling.style.backgroundColor = window.colors[x];
+					document.getElementById(currBlock + char).previousElementSibling.previousElementSibling.style.backgroundColor = window.colors[x];
+				}
+			} else {
+				currBlock = char;
+			}
+		}
+	}
 }
