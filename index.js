@@ -133,10 +133,7 @@ function perWeekStats(times) {
 	timeOutput.innerHTML = '';
 	classOutput.innerHTML = '';
 	for (var tri = 0; tri < 3; tri++) {
-		console.log(tri)
-		console.log(document.getElementById('conflictArea').childNodes[tri * 2 + 1])
 		if (document.getElementById('conflictArea').childNodes[tri * 2 + 1].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
-			console.log('s')
 			continue;
 		}
 		minutesPerWeek = 0;
