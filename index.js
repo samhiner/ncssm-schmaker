@@ -216,7 +216,7 @@ function enterQuestion(qArr) {
 	}
 
 	for (x in qArr) {
-		document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
+		document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '"' + (document.getElementById('t' + qArr[x].substr(-1) + 'ConflictDisplay').innerText != 'No Conflict' ? 'disabled' : '') + '>' + qArr[x] + '</option><br>';
 	}
 
 	document.getElementById('qArea').innerHTML += '</select>';
