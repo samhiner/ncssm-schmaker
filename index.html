@@ -11,6 +11,7 @@ make buttons not look like garbo on phone
 make results not side by side
 make calendar times accurate
 try fr406 and varsity sports
+maybe give more conflict info by finding which courses get into conflict a lot in permutations. One that got into most conflicts is sent to browser to say "Conflict(s) including X"
 -->
 <!DOCTYPE html>
 <html>
@@ -19,6 +20,7 @@ try fr406 and varsity sports
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js'></script>
 	<link href='https://fonts.googleapis.com/css?family=Roboto&display=swap' rel='stylesheet'> <!--en490 dr302 bi364 ch410 bi446 ar350 ar322 ph353b pa126 mu372 as405c bi360-->
 	<script src='index.js'></script>
+	<meta name='viewport' content='width=device-width'><!--makes media queries register in Google Inspect Element Device-->
 	<style>
 		body {
 			margin-top: 10vh;
@@ -83,23 +85,48 @@ try fr406 and varsity sports
 			height: 4vh;
 			font-size: 1vh;
 		}
-		.screenHalf {
-			vertical-align: top;
-		}
 		.labs td {
 			height: 2vh;
 		}
+
+		.calendar {
+			table-layout: auto;
+		}
+		#loadingScreen {
+			position: fixed;
+			width: 30vw;
+			height: 20vh;
+			top: 40vh;
+			left: 35vw;
+			background-color: white;
+			line-height: 20vh;
+			font-size: 5vh;
+			z-index: 1;
+			display: none;
+		}
+		#loadingBackground {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			background-color: black;
+			opacity: 0.5;
+			top: 0;
+			left: 0;
+			display: none;
+		}
 		@media (max-width: 870px) {
+			/*makes the calendar less cramped on mobile but way longer
 			.calendar td {
 				height: 6vh;
 				font-size: 1vh;
 			}
 			.labs td {
 				height: 3vh;
-			}			
-		}
-		.calendar {
-			table-layout: auto;
+			}*/
+			.loadingScreen {
+				width: 60vw;
+				left: 20vw;
+			}
 		}
 		@media (min-width: 1000px) {
 			table, .entryTable {
@@ -179,11 +206,10 @@ try fr406 and varsity sports
 		<span style='float:right;'><!--N/A-->Under Construction</span><br><br>
 		Time Spent in Class Each Week<span style='float:right;'><!--N/A-->Under Construction</span><br><br>
 		<details>
-			<summary>Average GPA<span style='float:right;'><!--N/A-->Under Construction</span><br><br></summary>
+			<summary>Average GPA<span style='float:right;' id='avgGPA'>N/A</span><br><br></summary>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
 		</details>
 	</div><br>
 
@@ -457,12 +483,14 @@ try fr406 and varsity sports
 	</tbody></table>
 
 	
+	<div id='loadingScreen'>Loading</div>
+	<div id='loadingBackground'></div>
 
 	<script>
 		//set up sliders to responsively update when changed
 		var gradeInputs = document.getElementsByName('gradeInput');
 
-		for (var x = 0; x < 4; x++) {
+		for (var x = 0; x < 3; x++) {
 			gradeInputs[x].oninput = function() {
 				updateGPA();
 			}

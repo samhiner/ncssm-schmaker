@@ -7,7 +7,6 @@ function addRow() {
 	cloneRow.children[1].firstElementChild.value = '';
 	cloneRow.children[2].firstElementChild.value = '';
 	table.insertBefore(cloneRow, document.getElementById('tableControls'))
-	//console.log(cloneRow.children[1].first)
 }
 
 function getConflicts() {
@@ -35,10 +34,16 @@ function getConflicts() {
 		classChoices.push(triChoices)
 	}
 
+	document.getElementById('loadingBackground').style.display = 'block';
+	document.getElementById('loadingScreen').style.display = 'block';
+
 	$.ajax({
 		url: 'https://script.google.com/macros/s/AKfycbwHjug6DYFyefmbRotIRbnTktIBCUGFXf0wBq9krkbxcxU0Dys0/exec?t1=' + classChoices[0] + '&t2=' + classChoices[1] + '&t3=' + classChoices[2],
 		dataType: 'jsonp'
 	});
+
+	document.getElementsByName('gradeInput')[0].value = window.classNumbers['300'] + window.classNumbers['350'] + window.classNumbers['400'];
+	updateGPA();
 }
 
 function deleteRow() {
@@ -48,7 +53,11 @@ function deleteRow() {
 	}
 }
 
-function addResults(conflicts/*, tri1Times, tri2Times, Tri3Times*/) {
+function addResults(conflicts, b) {
+	document.getElementById('loadingScreen').style.display = 'none';
+	document.getElementById('loadingBackground').style.display = 'none';
+
+	console.log(b)
 	conflictOutputs = document.getElementById('conflictArea').childNodes;
 	for (var x = 0; x < 3; x++) {
 		if (conflicts[x] == "true") {
@@ -66,5 +75,17 @@ function addResults(conflicts/*, tri1Times, tri2Times, Tri3Times*/) {
 }
 
 function updateGPA() {
-	
+	var numGrades = 0;
+	var gradeInputs = document.getElementsByName('gradeInput')
+	var totalClasses = window.classNumbers['300'] + window.classNumbers['350'] + window.classNumbers['400'];
+
+	for (var x = 0; x < 3; x++) {
+		numGrades += Number(gradeInputs[x].value);
+	}
+
+	if (totalClasses == numGrades) {
+		document.getElementById('avgGPA').innerHTML = ((window.classNumbers['300'] * 4.5 + window.classNumbers['350'] * 4.75 + window.classNumbers['400'] * 5 - gradeInputs[1].value - gradeInputs[2].value * 2) / totalClasses).toFixed(4);
+	} else {
+		document.getElementById('avgGPA').innerHTML = 'You have ' + totalClasses + ' classes but ' + numGrades + ' grades.'
+	}
 }
