@@ -21,7 +21,7 @@ doesn't autoselect on mobile
 	<title>NCSSM Schmaker 2019-2020</title>
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js'></script>
 	<link href='https://fonts.googleapis.com/css?family=Roboto&display=swap' rel='stylesheet'>
-	<link rel='stylesheet' href='https://raw.githubusercontent.com/Fyrd/purejs-datalist-polyfill/master/style.css'>
+	<link rel='stylesheet' href='assets/datalist_style.css'>
 	<script src='index.js'></script>
 	<meta name='viewport' content='width=device-width'><!--makes media queries register in Google Inspect Element Device-->
 	<style>
@@ -66,9 +66,6 @@ doesn't autoselect on mobile
 		.results {
 			width: 90%;
 			/*background-color: WhiteSmoke;*/
-		}
-		.screenHalf {
-			width: 50%;
 		}
 		.stats {
 			text-align: left;
@@ -117,6 +114,10 @@ doesn't autoselect on mobile
 			left: 0;
 			display: none;
 		}
+		#qWrapper {
+			margin-right: 5%;
+			margin-left: 5%;
+		}
 		@media (max-width: 870px) {
 			/*makes the calendar less cramped on mobile but way longer
 			.calendar td {
@@ -135,7 +136,7 @@ doesn't autoselect on mobile
 			table, .entryTable {
 				width: 871px;
 			}
-			.stats, .entryTable, hr {
+			.stats, .entryTable, hr, #qWrapper {
 				margin-left: calc((100% - 871px) / 2);
 				margin-right: calc((100% - 871px) / 2);
 			}
@@ -220,11 +221,14 @@ doesn't autoselect on mobile
 		</details>
 	</div><br>
 
-
-
 	<hr style='margin-bottom: 0.7em'>
 
 	<div style='font-size: 3vh; font-weight: bold;'>Your Calendar</div><br>
+
+	<div id='qWrapper' style='display: none; border: 1px solid black; margin-right: '>
+		<div id='qArea'></div>
+		<button onclick='getCalendarQuestions()'>Next Question</button>
+	</div><br>
 
 	<table border='1' align='center' class='calendar'><tbody>
 		<tr>
@@ -249,99 +253,99 @@ doesn't autoselect on mobile
 		<tr>
 			<td class='dayBlock'>1</td>
 			<td class='time'>8:00 to 8:50</td>
-			<td class='weekBlock'>A1</td>
+			<td class='weekBlock' id='A1'>A1</td>
 			
 			<td class='dayBlock'>1</td>
 			<td class='time'>8:00 to 8:50</td>
-			<td class='weekBlock'>C2</td>
+			<td class='weekBlock' id='C2'>C2</td>
 			
 			<td class='dayBlock'>1</td>
 			<td class='time'>8:00 to 8:50</td>
-			<td class='weekBlock'>B3</td>
+			<td class='weekBlock' id='B3'>B3</td>
 			
 			<td class='dayBlock'>1</td>
 			<td class='time'>8:00 to 8:50</td>
-			<td class='weekBlock'>D4</td>
+			<td class='weekBlock' id='D4'>D4</td>
 			
 			<td class='dayBlock'>1</td>
 			<td class='time'>8:00 to 8:50</td>
-			<td class='weekBlock'>A5</td>
+			<td class='weekBlock' id='A5'>A5</td>
 		</tr>
 		<tr>
 			<td class='dayBlock'>2</td>
 			<td class='time'>8:55 to 9:45</td>
-			<td class='weekBlock'>B1</td>
+			<td class='weekBlock' id='B1'>B1</td>
 
 			<td class='dayBlock'>2</td>
 			<td class='time'>8:55 to 9:45</td>
-			<td class='weekBlock'>D2</td>
+			<td class='weekBlock' id='D2'>D2</td>
 
 			<td class='dayBlock'>2</td>
 			<td class='time'>8:55 to 9:45</td>
-			<td class='weekBlock'>A3</td>
+			<td class='weekBlock' id='A3'>A3</td>
 
 			<td class='dayBlock'>2</td>
 			<td class='time'>8:55 to 9:45</td>
-			<td class='weekBlock'>C4</td>
+			<td class='weekBlock' id='C4'>C4</td>
 
 			<td class='dayBlock'>2</td>
 			<td class='time'>8:55 to 9:45</td>
-			<td class='weekBlock'>B5</td>
+			<td class='weekBlock' id='B5'>B5</td>
 		</tr>
 		<tr>
 			<td class='dayBlock'>3</td>
 			<td class='time'>9:50 to 10:40</td>
-			<td class='weekBlock'>C1</td>
+			<td class='weekBlock' id='C1'>C1</td>
 
 			<td class='dayBlock'>3</td>
 			<td class='time'>9:50 to 10:40</td>
-			<td class='weekBlock'>B2</td>
+			<td class='weekBlock' id='B2'>B2</td>
 
 			<td class='dayBlock'>3</td>
 			<td class='time'>9:50 to 10:40</td>
-			<td class='weekBlock'>D3</td>
+			<td class='weekBlock' id='D3'>D3</td>
 
 			<td class='dayBlock'>3</td>
 			<td class='time'>9:50 to 10:40</td>
-			<td class='weekBlock'>A4</td>
+			<td class='weekBlock' id='A4'>A4</td>
 
 			<td class='dayBlock'>3</td>
 			<td class='time'>9:50 to 10:40</td>
-			<td class='weekBlock'>C5</td>
+			<td class='weekBlock' id='C5'>C5</td>
 		</tr>
 		<tr>
 			<td class='dayBlock'>4</td>
 			<td class='time'>10:45 to 11:35</td>
-			<td class='weekBlock'>D1</td>
+			<td class='weekBlock' id='D1'>D1</td>
 
 			<td class='dayBlock' rowspan='2'>4</td>
 			<td class='time' rowspan='2'>10:45 to 12:15</td>
-			<td class='weekBlock'>A2</td>
+			<td class='weekBlock' id='A2'>A2</td>
 
 			<td class='dayBlock' rowspan='2'>4</td>
 			<td class='time' rowspan='2'>10:45 to 12:15</td>
-			<td class='weekBlock'>C3</td>
+			<td class='weekBlock' id='C3'>C3</td>
 
 			<td class='dayBlock' rowspan='2'>4</td>
 			<td class='time' rowspan='2'>10:45 to 12:15</td>
-			<td class='weekBlock'>B4</td>
+			<td class='weekBlock' id='B4'>B4</td>
 
 			<td class='dayBlock' rowspan='2'>4</td>
 			<td class='time' rowspan='2'>10:45 to 12:15</td>
-			<td class='weekBlock'>D5</td>
+			<td class='weekBlock' id='D5'>D5</td>
 		</tr>
 		<tr class='labs'>
 			<td class='dayBlock' rowspan='2'></td>
 			<td class='time' rowspan='2'>11:35 to 12:30</td>
 			<td class='weekBlock' rowspan='2'>LUNCH</td>
 
-			<td class='weekBlock'>A2 LAB</td>
+			<td class='weekBlock' id='AL'>A2 LAB</td>
 
-			<td class='weekBlock'>C3 LAB</td>
+			<td class='weekBlock' id='CL'>C3 LAB</td>
 
-			<td class='weekBlock'>B4 LAB</td>
+			<td class='weekBlock' id='BL'>B4 LAB</td>
 
-			<td class='weekBlock'>D5 LAB</td>
+			<td class='weekBlock' id='DL'>D5 LAB</td>
 		</tr>
 		<tr>
 			<td class='dayBlock' rowspan='2'></td>
@@ -368,7 +372,7 @@ doesn't autoselect on mobile
 		<tr class='labs'>
 			<td class='dayBlock' rowspan='3'>5</td>
 			<td class='time' rowspan='3'>12:55 to 2:25</td>
-			<td class='weekBlock'>E2 LAB</td>
+			<td class='weekBlock' id='EL'>E2 LAB</td>
 
 			<td class='dayBlock' rowspan='2'></td>
 			<td class='time' rowspan='2'>12:55 to 1:45</td>
@@ -376,11 +380,11 @@ doesn't autoselect on mobile
 
 			<td class='dayBlock' rowspan='3'>5</td>
 			<td class='time' rowspan='3'>12:55 to 2:25</td>
-			<td class='weekBlock'>F4 LAB</td>
+			<td class='weekBlock' id='FL'>F4 LAB</td>
 
 			<td class='dayBlock' rowspan='3'>5</td>
 			<td class='time' rowspan='3'>12:55 to 2:25</td>
-			<td class='weekBlock'>G5 LAB</td>
+			<td class='weekBlock' id='GL'>G5 LAB</td>
 		</tr>
 		<tr>
 			<td class='dayBlock' rowspan='2'>5</td>
@@ -443,52 +447,53 @@ doesn't autoselect on mobile
 			<td class='weekBlock'>MEETING</td>
 		</tr>
 		<tr>
-			<td colspan='15'><div style='font-size: 50px; font-weight: bolder; color: orange;'>Calendar Under Construction</div></td>
+			<td colspan='15'></td>
 		</tr>
 		<tr>
 			<td class='dayBlock'>8</td>
 			<td class='time'>6:15 to 7:55</td>
-			<td class='weekBlock'>H1</td>
+			<td class='weekBlock' id='H1'>H1</td>
 
 			<td class='dayBlock'>8</td>
 			<td class='time'>6:15 to 7:55</td>
-			<td class='weekBlock'>H1</td>
+			<td class='weekBlock' id='H2'>H2</td>
 
 			<td class='dayBlock'>8</td>
 			<td class='time'>6:15 to 7:55</td>
-			<td class='weekBlock'>H1</td>
+			<td class='weekBlock' id='H3'>H3</td>
 
 			<td class='dayBlock'>8</td>
 			<td class='time'>6:15 to 7:55</td>
-			<td class='weekBlock'>H1</td>
+			<td class='weekBlock' id='H4'>H4</td>
 
 			<td class='dayBlock'>8</td>
 			<td class='time'>6:15 to 7:55</td>
-			<td class='weekBlock'>H1</td>
+			<td class='weekBlock' id='H5'>H5</td>
 		</tr>
 		<tr>
 			<td class='dayBlock'>9</td>
 			<td class='time'>8:05 to 9:45</td>
-			<td class='weekBlock'>I1</td>
+			<td class='weekBlock' id='I1'>I1</td>
 
 			<td class='dayBlock'>9</td>
 			<td class='time'>8:05 to 9:45</td>
-			<td class='weekBlock'>I1</td>
+			<td class='weekBlock' id='I2'>I2</td>
 
 			<td class='dayBlock'>9</td>
 			<td class='time'>8:05 to 9:45</td>
-			<td class='weekBlock'>I1</td>
+			<td class='weekBlock' id='I3'>I3</td>
 
 			<td class='dayBlock'>9</td>
 			<td class='time'>8:05 to 9:45</td>
-			<td class='weekBlock'>I1</td>
+			<td class='weekBlock' id='I4'>I4</td>
 
 			<td class='dayBlock'>9</td>
 			<td class='time'>8:05 to 9:45</td>
-			<td class='weekBlock'>I1</td>
+			<td class='weekBlock' id='I5'>I5</td>
 		</tr>
 	</tbody></table>
 
+	<br><br><div style='text-align: right;'>Found a bug? <a href='mailto:hiner21s@ncssm.edu'>Let me know!</a></div>
 	
 	<div id='loadingScreen'>Loading</div>
 	<div id='loadingBackground'></div>
@@ -505,6 +510,6 @@ doesn't autoselect on mobile
 
 		accessLocalStorage();
 	</script>
-	<script src='https://raw.githubusercontent.com/Fyrd/purejs-datalist-polyfill/master/datalist.polyfill.min.js'></script>
+	<script src='assets/datalist.polyfill.min.js'></script>
 </body>
 </html>
