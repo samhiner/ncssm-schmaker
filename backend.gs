@@ -2,6 +2,12 @@ SHEET_ID = '1Wv4XzU5aIEemGKYjoCBuCKjNQEIcaHvNHPspVl7hxkw'
 DIGITS = ['1', '2', '3', '4', '5'];
 
 function doGet(request) {
+  /*var request = {'parameter': 
+                 {'t1': 'AS405a;SP307a;PH401a;MA466;BI364;RE102;',
+                  't2': 'AS405b;SP307b;PH401b;MA458;IE450;PA162;',
+                  't3': 'AS405c;SP307c;MA472;MA468;MA476;RE122;MA460;'}
+                }*/
+  
   var conflictBools = [];
   var classLists = [];
   var results;
@@ -33,7 +39,9 @@ function scheduleHandler(classes, tri) {
     if (classes.indexOf(classCode) != -1) {
       allClassTimes[classCode].push(data[row][1])
     }
-  }  
+  }
+  
+  Logger.log(allClassTimes);
   //conflict calculator
   /*TODO if you want1: fill in required spots for 1-class courses
     2: lay out all options for remaining classes and if you have an open class with no potential conflicts resolve yourself there
@@ -41,10 +49,12 @@ function scheduleHandler(classes, tri) {
   */
   
   classTimesList = [];
-  for (var key in allClassTimes) {
-    classTimesList.push(allClassTimes[key]);
+  for (var key in classes) {//this gets duplicates as it pulls from same spot on dict twice
+    classTimesList.push(allClassTimes[classes[key]]);
   }
 
+  Logger.log(classTimesList);
+  
   classTimesList.sort(function(a, b) {
     if (a.length > b.length) {
       return 1;
