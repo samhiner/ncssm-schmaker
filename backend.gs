@@ -3,10 +3,18 @@ DIGITS = ['1', '2', '3', '4', '5'];
 
 function doGet(request) {
   var conflictBools = [];
+  var classLists = [];
+  var results;
   for (var x = 1; x <= 3; x++) {
-    conflictBools.push(scheduleHandler(request['parameter']['t' + String(x)].split(';').slice(0, -1), x));
+    if (request['parameter']['t' + String(x)] != '' && request['parameter']['t' + String(x)] != undefined) {
+      results = scheduleHandler(request['parameter']['t' + String(x)].split(';').slice(0, -1), x)
+      conflictBools.push(results[0]);
+      classLists.push(results[1]);
+    } else {
+      conflictBools.push('unknown');
+    }
   }
-  return ContentService.createTextOutput('console.log(' + conflictBools + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  return ContentService.createTextOutput('addResults(["' + conflictBools.join('", "') + '"], ' + JSON.stringify(classLists) + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
 }
 
 function scheduleHandler(classes, tri) {
@@ -37,29 +45,41 @@ function scheduleHandler(classes, tri) {
     classTimesList.push(allClassTimes[key]);
   }
 
+  classTimesList.sort(function(a, b) {
+    if (a.length > b.length) {
+      return 1;
+    } else if (a.length == b.length) {
+      return 0;
+    } else {
+      return -1;
+    }
+  });
+  
   //thx find and replace -- theres got to be a better way to do that
   var calendar = {'A': [false, false, false, false, false], 'B': [false, false, false, false, false], 'C': [false, false, false, false, false], 'D': [false, false, false, false, false], 'E': [false, false, false, false, false], 'F': [false, false, false, false, false], 'G': [false, false, false, false, false], 'H': [false, false, false, false], 'I': [false, false, false, false]};
-  //Logger.log(ContentService.createTextOutput(conflictCalculator(classTimesList, calendar)))
   
-  return conflictCalculator(classTimesList, calendar);
+  return [conflictCalculator(classTimesList, calendar), allClassTimes];
 }
 
 function conflictCalculator(allClassTimes, calendar) {
-
   var possTimes = allClassTimes[0];
   for (x in possTimes) {
-    Logger.log(calendar);
     var scheduleAttempt = trySchedule(possTimes[x], JSON.parse(JSON.stringify(calendar)));
-    Logger.log(possTimes[x])
-    Logger.log(scheduleAttempt);
+    Logger.log('---Current calendar and remaining class times to schedule.');
+    Logger.log(calendar);
     Logger.log(allClassTimes);
+    Logger.log('---Potential time to schedule from first remaining class and whether it was scheduled.');
+    Logger.log(possTimes[x])
+    Logger.log(scheduleAttempt !== false);
     if (scheduleAttempt !== false) {
+      Logger.log('Recursion depth increased!');
       if (allClassTimes.length == 1 || conflictCalculator(allClassTimes.slice(1), scheduleAttempt)) {
         return true;
       }
     }
   }
 
+  Logger.log('Recursion depth decreased.');
   return false;
 }
 
@@ -67,6 +87,12 @@ function trySchedule(classTime, calendar) {
   var blockChar;
   for (var x = 0; x < classTime.length; x++) {
     if (DIGITS.indexOf(classTime[x]) != -1) {
+      
+      //this accounts for classes with variable blocks like M
+      if (calendar[blockChar] == undefined) {
+        calendar[blockChar] = [false, false, false, false, false];
+      }
+      
       if (calendar[blockChar][classTime[x] - 1] == true) {
         return false;
       } else {
@@ -75,7 +101,7 @@ function trySchedule(classTime, calendar) {
     } else if (classTime[x] == 'L') { //labs don't matter bc A2 and A2L still conflict and Ls don't reach into other blocks
       continue;
     } else {
-      blockChar = classTime[x];
+      blockChar = classTime[x]; //if there are no numbers in a schedule, like VS or N/A, it isn't scheduled.
     }
   }
   return calendar;
