@@ -208,16 +208,20 @@ function enterQuestion(qArr) {
 
 	if (qArr[0] == 'Trimester 1') {
 		document.getElementById('qArea').innerHTML += 'Which trimester do you want a calendar for?<br>';
+		for (x in qArr) {
+			document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '"' + (document.getElementById('t' + qArr[x].substr(-1) + 'ConflictDisplay').innerText != 'No Conflict' ? 'disabled' : '') + '>' + qArr[x] + '</option><br>';
+		}
 	} else {
 		console.log(colorPalette[(x - 2) % colorPalette.length])
 		console.log(colorPalette)
 		console.log(x -2)
 		document.getElementById('qArea').innerHTML += 'Choose when you are taking ' + window.keyOrder[window.qNum - 2] + '. Also, choose the color you want for that course <input id="courseColor" type="color" value="' + colorPalette[(window.qNum - 2) % colorPalette.length] + '"><br>';
+		for (x in qArr) {
+			document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
+		}
 	}
 
-	for (x in qArr) {
-		document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '"' + (document.getElementById('t' + qArr[x].substr(-1) + 'ConflictDisplay').innerText != 'No Conflict' ? 'disabled' : '') + '>' + qArr[x] + '</option><br>';
-	}
+
 
 	document.getElementById('qArea').innerHTML += '</select>';
 }
