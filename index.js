@@ -69,7 +69,7 @@ function addResults(conflicts, times) {
 	document.getElementById('loadingScreen').style.display = 'none';
 	document.getElementById('loadingBackground').style.display = 'none';
 
-	conflictOutputs = document.getElementById('conflictArea').childNodes;
+	var conflictOutputs = document.getElementById('conflictArea').childNodes;
 	for (var x = 0; x < 3; x++) {
 		if (conflicts[x] == "true") {
 			// * 2 + 1 factors in for text elements
@@ -132,11 +132,17 @@ function perWeekStats(times) {
 
 	timeOutput.innerHTML = '';
 	classOutput.innerHTML = '';
-	for (tri in times) {
+	for (var tri = 0; tri < 3; tri++) {
+		console.log(tri)
+		console.log(document.getElementById('conflictArea').childNodes[tri * 2 + 1])
+		if (document.getElementById('conflictArea').childNodes[tri * 2 + 1].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
+			console.log('s')
+			continue;
+		}
 		minutesPerWeek = 0;
 		classesPerWeek = 0;
-		for (key in times[tri]) {
-			classSchedule = times[tri][key][0]
+		for (key in times[0]) {
+			classSchedule = times[0][key][0]
 			for (x in classSchedule) {
 				if (classSchedule[x] == 'L') {
 					minutesPerWeek += 40;
@@ -146,6 +152,7 @@ function perWeekStats(times) {
 				}
 			}
 		}
+		times.shift();
 		timeOutput.innerHTML += 'T' + (Number(tri) + 1) + ': ' + Math.floor(minutesPerWeek / 60) + 'h ' + (minutesPerWeek % 60) + 'm';
 		classOutput.innerHTML += 'T' + (Number(tri) + 1) + ': ' + classesPerWeek + ' classes';
 
