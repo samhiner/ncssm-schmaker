@@ -7,11 +7,12 @@ get other stats like how many minutes a weeks, meetings a week, gpa, etc. And on
 consolidate everything into one ajax request
 abstract the massive options list to work with any course meeting patters spreadsheet
 make buttons not look like garbo on phone
-//keep a window variable that has question answers to prevent needing to re-answer, but also let people go back on questions, and save data across sessions
+//keep a window variable that has question answers to prevent needing to re-answer, but also let people go back on questions, and redo questions later after they're done
 make results not side by side
 make calendar times accurate
 try fr406 and varsity sports
 maybe give more conflict info by finding which courses get into conflict a lot in permutations. One that got into most conflicts is sent to browser to say "Conflict(s) including X"
+clearl localstorage button
 -->
 <!DOCTYPE html>
 <html>
@@ -196,20 +197,20 @@ maybe give more conflict info by finding which courses get into conflict a lot i
 			<td>Trimester 3</td>
 		</tr>
 		<tr id='conflictArea'>
-			<td style='background-color: #eed390'>Conflict Unknown</td>
-			<td style='background-color: #eed390'>Conflict Unknown</td>
-			<td style='background-color: #eed390'>Conflict Unknown</td>
+			<td style='background-color: #eed390'>Click Calculate to Find Conflicts</td>
+			<td style='background-color: #eed390'>Click Calculate to Find Conflicts</td>
+			<td style='background-color: #eed390'>Click Calculate to Find Conflicts</td>
 		</tr>
 	</tbody></table>
 	<div class='stats'><br><br>
-		Number of Periods Each Week
-		<span style='float:right;'><!--N/A-->Under Construction</span><br><br>
-		Time Spent in Class Each Week<span style='float:right;'><!--N/A-->Under Construction</span><br><br>
+		Number of Classes Each Week
+		<span style='float:right;' id='classesPerWeek'>N/A</span><br><br>
+		Time Spent in Class Each Week<span style='float:right;' id='timePerWeek'>N/A</span><br><br>
 		<details>
 			<summary>Average GPA<span style='float:right;' id='avgGPA'>N/A</span><br><br></summary>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'><br><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br>
 		</details>
 	</div><br>
 
@@ -495,6 +496,8 @@ maybe give more conflict info by finding which courses get into conflict a lot i
 				updateGPA();
 			}
 		}
+
+		accessLocalStorage();
 	</script>
 </body>
 </html>
