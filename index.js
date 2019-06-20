@@ -265,10 +265,22 @@ function getCalendarQuestions(answer, num) {
 			if (document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') {
 				blankConstant++;
 			}
+		} else if (Number(answer.substr(-1)) == 3 && document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') {
+			blankConstant++;
 		}
+
+		console.log(window.possSchedules)
+		console.log(window.possSchedules['3'])
+		console.log(answer.substr(-1))
+
 		window.times = window.times[Number(answer.substr(-1)) - blankConstant];
 		window.possSchedules = window.possSchedules[answer.substr(-1)];
 		window.keyOrder = Object.keys(window.times);
+
+		console.log('FUCK')
+		console.log(window.times)
+		console.log(window.possSchedules)
+		console.log(window.keyOrder)
 
 		window.qNum++;
 		enterQuestion(['Auto Generate Schedule', 'Manually Pick Meeting Patterns']);
@@ -399,6 +411,10 @@ function endCalendarQuestions() {
 				}
 			} else {
 				currBlock = char;
+
+				if (currBlock == 'M') {
+
+				}
 			}
 		}
 	}
