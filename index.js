@@ -8,6 +8,20 @@ function addRow(num = 1) {
 		cloneRow.children[0].firstElementChild.value = '';
 		cloneRow.children[1].firstElementChild.value = '';
 		cloneRow.children[2].firstElementChild.value = '';
+
+		console.log(cloneRow.children[0].firstElementChild.attributes)
+
+		cloneRow.children[0].firstElementChild.list = 'tri1Classes' + Date.now();
+		cloneRow.children[0].firstElementChild.nextElementSibling.id = 'tri1Classes' + Date.now();
+		cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
+		cloneRow.children[1].firstElementChild.list = 'tri2Classes' + Date.now();
+		cloneRow.children[1].firstElementChild.nextElementSibling.id = 'tri2Classes' + Date.now();
+		cloneRow.children[1].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
+		cloneRow.children[2].firstElementChild.list = 'tri3Classes' + Date.now();
+		cloneRow.children[2].firstElementChild.nextElementSibling.id = 'tri3Classes' + Date.now();
+		cloneRow.children[2].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
+
+
 		table.insertBefore(cloneRow, document.getElementById('tableControls'))
 	}
 }
@@ -73,7 +87,6 @@ function addResults(conflicts, times, possSchedules, doCalendar = true) {
 
 	var conflictOutputs = document.getElementById('conflictArea').childNodes;
 	for (var x = 0; x < 3; x++) {
-		console.log(conflicts[x])
 		if (conflicts[x] == "true") {
 			// * 2 + 1 factors in for text elements
 			conflictOutputs[x * 2 + 1].style.backgroundColor = 'lightgreen';
@@ -459,9 +472,10 @@ function insertClasses() {
 
 function insertMeeting(startWeekDay, start, end, name) {
 	var starts = {1: 19, 2: 20, 3: 21, 4: 15, 5: 16};
+	//starts = {1: 11, 2: 12, 3: 6, 4: 7, 5: 8}
 
 	var event = {
-		'summary': name,
+		'summary': $('option[value*="' + name + '"').val(),
 		'start': {
 			'dateTime': '2019-08-' + String(starts[startWeekDay]) + 'T' + start + ':00-04:00',
 			'timeZone': 'America/New_York'
