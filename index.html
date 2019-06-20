@@ -11,11 +11,17 @@ make calendar times accurate
 try fr406 and varsity sports
 maybe give more conflict info by finding which courses get into conflict a lot in permutations. One that got into most conflicts is sent to browser to say "Conflict(s) including X"
 clearl localstorage button
+*serious* refactoring
 
-make random schedule for calendar and don't let user create a conflicting calendar
-export to gcal 
-make labs have their own time slot
-key for calendar colors
+don't let user create a conflicting calendar
+!key for calendar colors
+!clear calendar when you click calculate again
+make duplicate classes work for calendar/quiz/stats ig
+!some way to go back on the quiz (bc I will save quiz results). Yeah have a reset calendar button. And one quiz question will be if you want to randomly generate schedule
+!check phone
+!tri 2 classes shouldn't be gcal'd in tri 1
+all results in localStorage
+!testing
 -->
 <!DOCTYPE html>
 <html>
@@ -215,7 +221,7 @@ key for calendar colors
 		Number of Classes Each Week
 		<span style='float:right;' id='classesPerWeek'>N/A</span><br><br>
 		Time Spent in Class Each Week<span style='float:right;' id='timePerWeek'>N/A</span><br><br>
-		<details>
+		<details open>
 			<summary>Average GPA This Year<span style='float:right;' id='avgGPA'>N/A</span><br><br></summary>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br>
@@ -495,6 +501,9 @@ key for calendar colors
 		</tr>
 	</tbody></table>
 
+	<button id="authorize_button">Export to Google Calendar</button>
+	<pre id="content" style="white-space: pre-wrap;"></pre>
+
 	<br><br><div style='text-align: right;'>Found a bug? <a href='mailto:hiner21s@ncssm.edu'>Let me know!</a> Also, here is the <a href='PRIVACYPOLICY.html'>Privacy Policy</a></div>
 	
 	<div id='loadingScreen'>Loading</div>
@@ -513,5 +522,12 @@ key for calendar colors
 		accessLocalStorage();
 	</script>
 	<script src='assets/datalist.polyfill.min.js'></script>
+	<!--script from google for Google Calendar integration-->
+	<script async defer src="https://apis.google.com/js/api.js"
+		onload="this.onload=function(){};handleClientLoad()"
+		onreadystatechange="if (this.readyState === 'complete') this.onload()">
+	</script>
+
+	<script src='gcal_code.js'></script>
 </body>
 </html>

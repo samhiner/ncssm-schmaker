@@ -105,28 +105,36 @@ function updateGPA() {
 }
 
 function accessLocalStorage() {
-	if (localStorage.getItem('inputtedClasses') == null) {
-		return;
-	}
-
-	var classes = localStorage.getItem('inputtedClasses').split(',')
-	var triClasses;
-	var triInputs;
-	for (x in classes) {
-		triClasses = classes[x].split(';').slice(0, -1);
-		triInputs = document.getElementsByName('tri' + String(Number(x) + 1) + 'Choice');
-
-		if (triClasses.length > triInputs.length) {
-			addRow(triClasses.length - triInputs.length);
+	if (localStorage.getItem('inputtedClasses') != null) {
+		var classes = localStorage.getItem('inputtedClasses').split(',')
+		var triClasses;
+		var triInputs;
+		for (x in classes) {
+			triClasses = classes[x].split(';').slice(0, -1);
 			triInputs = document.getElementsByName('tri' + String(Number(x) + 1) + 'Choice');
-		}
 
-		for (y in triClasses) {
-			triInputs[y].value = $('option[value*="' + triClasses[y] + '"').val();
-			if (triInputs[y].value == 'undefined') {
-				triInputs[y].value = '';
+			if (triClasses.length > triInputs.length) {
+				addRow(triClasses.length - triInputs.length);
+				triInputs = document.getElementsByName('tri' + String(Number(x) + 1) + 'Choice');
+			}
+
+			for (y in triClasses) {
+				triInputs[y].value = $('option[value*="' + triClasses[y] + '"').val();
+				if (triInputs[y].value == 'undefined') {
+					triInputs[y].value = '';
+				}
 			}
 		}
+	}
+
+	if (localStorage.getItem('keyOrder') != null && localStorage.getItem('times') != null && localStorage.getItem('colors') != null) {
+		window.keyOrder = localStorage.getItem('keyOrder').split(',');
+		window.times = JSON.parse(localStorage.getItem('times'));
+		window.colors = localStorage.getItem('colors').split(',')
+		console.log(window.keyOrder)
+		console.log(window.times)
+		console.log(window.colors)
+		endCalendarQuestions();
 	}
 }
 
@@ -169,7 +177,7 @@ function perWeekStats(times) {
 	
 }
 
-function updateCalendar(times) {
+function updateCalendar(times) { //TODO theres no point of this function. find references and fix.
 	setupCalendarQuestions(times)
 }
 
@@ -212,7 +220,7 @@ function getCalendarQuestions(answer, num) {
 }
 
 function enterQuestion(qArr) {
-	var colorPalette = ['#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FF00FF', '#FF8C00', '#00FFFF', '#800000', '#4B0082']
+	var colorPalette = ['#00FFFF', '#FF0000', '#FFFF00', '#00FF00', '#FF00FF', '#FF8C00', '#800000', '#4B0082']
 
 	document.getElementById('qArea').innerHTML = '';
 
@@ -222,9 +230,6 @@ function enterQuestion(qArr) {
 			document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '"' + (document.getElementById('t' + qArr[x].substr(-1) + 'ConflictDisplay').innerText != 'No Conflict' ? 'disabled' : '') + '>' + qArr[x] + '</option><br>';
 		}
 	} else {
-		console.log(colorPalette[(x - 2) % colorPalette.length])
-		console.log(colorPalette)
-		console.log(x -2)
 		document.getElementById('qArea').innerHTML += 'Choose when you are taking ' + window.keyOrder[window.qNum - 2] + '. Also, choose the color you want for that course <input id="courseColor" type="color" value="' + colorPalette[(window.qNum - 2) % colorPalette.length] + '"><br>';
 		for (x in qArr) {
 			document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
@@ -242,20 +247,153 @@ function endCalendarQuestions() {
 	var currClass;
 	var currBlock;
 	var char;
+	var meetingDay;
+	var meetingTime;
+
+	window.schedule = []
+
+	localStorage.setItem('keyOrder', window.keyOrder);
+	localStorage.setItem('times', JSON.stringify(window.times));
+	localStorage.setItem('colors', window.colors);
+
 	for (x in window.keyOrder) {
 		currClass = window.times[window.keyOrder[x]]
 		for (var y in currClass) {
 			char = currClass[y]
+			console.log(currBlock + char)
 			if (!isNaN(char) || char == 'L') {
-				console.log(currBlock + char)
 				document.getElementById(currBlock + char).style.backgroundColor = window.colors[x];
 				if (document.getElementById(currBlock + char).previousElementSibling.className == 'time') {
 					document.getElementById(currBlock + char).previousElementSibling.style.backgroundColor = window.colors[x];
 					document.getElementById(currBlock + char).previousElementSibling.previousElementSibling.style.backgroundColor = window.colors[x];
+					console.log()
+					if (char != 'L') {
+						if (currClass[Number(y) + 1] == 'L' || ['12:55 to 2:25', '10:45 to 12:15'].indexOf(document.getElementById(currBlock + char).previousElementSibling.innerText) == -1) { //last one means if this isn't a lab block
+							meetingTime = document.getElementById(currBlock + char).previousElementSibling.innerText;
+						} else {
+							meetingTime = document.getElementById(currBlock + char).previousElementSibling.innerText.split(' ');
+							meetingTime = meetingTime[0] + ' ' + meetingTime[1] + ' ' + timeCalc(meetingTime[2], -40)
+						}
+					}
+				} else if (char != 'L') { //you never have an L on its own so we don't need a condition for coloring just a lab block
+					document.getElementById(currBlock + 'L').previousElementSibling.style.backgroundColor = window.colors[x];
+					document.getElementById(currBlock + 'L').previousElementSibling.previousElementSibling.style.backgroundColor = window.colors[x];
+
+					if (currClass[Number(y) + 1] == 'L') {
+						meetingTime = document.getElementById(currBlock + 'L').previousElementSibling.innerText;
+					} else {
+						meetingTime = document.getElementById(currBlock + 'L').previousElementSibling.innerText.split(' ');
+						console.log(meetingTime)
+						meetingTime = timeCalc(meetingTime[0], 40) + ' ' + meetingTime[1] + ' ' + meetingTime[2]
+						console.log(meetingTime)
+					}
+				}
+
+				if (char != 'L') {
+					window.schedule.push([char, meetingTime, window.keyOrder[x]])
 				}
 			} else {
 				currBlock = char;
 			}
 		}
 	}
+}
+
+
+function timeCalc(time, modifier) {
+	console.log(time)
+
+	time = time.split(':');
+	time[0] = Number(time[0]);
+	time[1] = Number(time[1]);
+
+	time[0] += Math.floor((modifier + time[1]) / 60);
+	if (time[0] == 0) {
+		time[0] = 12;
+	}
+
+	time[1] = (modifier + time[1]) % 60;
+	console.log(time[1])
+	if (time[1] < 0) {
+
+		time[1] += 60;
+	}
+
+	if (time[1] >= 10) {
+		console.log(time[0] + ':' + time[1])
+		return time[0] + ':' + time[1];
+	} else {
+		console.log(time[0] + ':0' + time[1])
+		return time[0] + ':0' + time[1];
+	}
+}
+
+function insertClasses() {
+	var times;
+	var batch = gapi.client.newBatch();
+	for (var x in window.schedule) {
+		
+		times = window.schedule[x][1].split(' ');
+		if (times[0] == '8:05' || (Number(times[0].split(':')[0]) <= 6)) {
+			times[0] = times[0].split(':');
+			times[0] = String(Number(times[0][0]) + Number(12)) + ':' + times[0][1];
+
+			if (times[0].length == 4) {
+				times[0] = '0' + times[0]
+			}
+		}
+
+		if ((times[2] == '9:45' && times[0] == '20:05') || (Number(times[2].split(':')[0]) < 8)) {
+			times[2] = times[2].split(':');
+			times[2] = String(Number(times[2][0]) + Number(12)) + ':' + times[2][1];
+
+			if (times[2].length == 4) {
+				times[2] = '0' + times[2]
+			}
+		}
+		batch.add(insertMeeting(window.schedule[x][0], times[0], times[2], window.schedule[x][2]));
+	}
+	
+	batch.then(function(event) {
+		console.log('Classes added to Google Calendar.');
+	});
+
+}
+
+function insertMeeting(startWeekDay, start, end, name) {
+	var starts = {1: 19, 2: 20, 3: 21, 4: 15, 5: 16};
+
+	var event = {
+		'summary': name,
+		'start': {
+			'dateTime': '2019-08-' + String(starts[startWeekDay]) + 'T' + start + ':00-04:00',
+			'timeZone': 'America/New_York'
+		},
+		'end': {
+			'dateTime': '2019-08-' + String(starts[startWeekDay]) + 'T' + end + ':00-04:00',
+			'timeZone': 'America/New_York'
+		},
+		'recurrence': [
+			'RRULE:FREQ=WEEKLY;COUNT=' + (startWeekDay == 4 ? String(12) : String(11))
+		],
+		'reminders': {
+			'useDefault': false,
+			'overrides': [
+				{
+					'method': 'popup',
+					'minutes': 10
+				}
+			]
+		}
+	};
+
+	console.log(event)
+
+	return gapi.client.calendar.events.insert({
+		'calendarId': 'primary',
+		'resource': event
+	});
+
+	
+
 }
