@@ -60,3 +60,7 @@ async function signIn() {
 	alert('I am not a verified publisher, so once you select your account, you will have to click Advanced -> Go to NCSSM Schmaker 2019-20');
 	return gapi.auth2.getAuthInstance().signIn();
 }
+
+function appendPre(info) {
+  console.log(info)
+}
