@@ -13,8 +13,14 @@ function addRow(num = 1) {
 }
 
 function getConflicts() {
+	localStorage.removeItem('keyOrder');
+	localStorage.removeItem('times');
+	localStorage.removeItem('colors');
+	localStorage.removeItem('conflicts');
+	localStorage.removeItem('timeOptions');
+	resetCalendar();
+
 	var classChoices = [];
-	window.classNumbers = {'300': 0, '350': 0, '400': 0};
 	var classCode;
 
 	//collect data aboput the classes that the user inputted
@@ -26,14 +32,6 @@ function getConflicts() {
 			if (classChoiceInputs[x].value != '') {
 				classCode = classChoiceInputs[x].value.split(' ')[0]
 				triChoices += classCode + ';';
-
-				if (classCode[2] == '3' && Number(classCode[3]) < 5) {
-					window.classNumbers['300'] += 1;
-				} else if (classCode[2] == '3') {
-					window.classNumbers['350'] += 1;
-				} else if (classCode[2] == '4') {
-					window.classNumbers['400'] += 1;
-				}
 			}
 		}
 		classChoices.push(triChoices)
@@ -49,13 +47,7 @@ function getConflicts() {
 		dataType: 'jsonp'
 	});
 
-	var gradeInputs = document.getElementsByName('gradeInput');
-
-	gradeInputs[0].disabled = false;
-	gradeInputs[1].disabled = false;
-	gradeInputs[2].disabled = false;
-	gradeInputs[0].value = window.classNumbers['300'] + window.classNumbers['350'] + window.classNumbers['400'];
-	updateGPA();
+	setGPA();
 }
 
 function deleteRow() {
@@ -65,12 +57,23 @@ function deleteRow() {
 	}
 }
 
-function addResults(conflicts, times) {
+function addResults(conflicts, times, possSchedules, doCalendar = true) {
+	console.log(conflicts)
+	console.log(times)
+
+	localStorage.setItem('conflicts', conflicts);
+	localStorage.setItem('timeOptions', JSON.stringify(times));
+	console.log(possSchedules)
+	localStorage.setItem('possSchedules', JSON.stringify(possSchedules))
+
+	window.possSchedules = possSchedules
+
 	document.getElementById('loadingScreen').style.display = 'none';
 	document.getElementById('loadingBackground').style.display = 'none';
 
 	var conflictOutputs = document.getElementById('conflictArea').childNodes;
 	for (var x = 0; x < 3; x++) {
+		console.log(conflicts[x])
 		if (conflicts[x] == "true") {
 			// * 2 + 1 factors in for text elements
 			conflictOutputs[x * 2 + 1].style.backgroundColor = 'lightgreen';
@@ -85,12 +88,53 @@ function addResults(conflicts, times) {
 	}
 
 	perWeekStats(times.slice(0));
-	updateCalendar(times.slice(0));
+	setGPA();
+	if (doCalendar) {
+		setupCalendarQuestions(times.slice(0));
+	}
+}
+
+function setGPA() {
+	window.classNumbers = {'300': 0, '350': 0, '400': 0};
+	var classCode;
+
+	//this is similar to above for, maybe make the loop a function with a function param
+	//collect data about the classes that the user inputted
+	for (var tri = 1; tri <= 3; tri++) {
+		var classChoiceInputs = document.getElementsByName('tri' + tri + 'Choice');
+		for (var x = 0; x < classChoiceInputs.length; x++) {
+			//get the first word- the class code- of each selected class
+			if (classChoiceInputs[x].value != '') {
+				classCode = classChoiceInputs[x].value.split(' ')[0]
+
+				if (classCode[2] == '3' && Number(classCode[3]) < 5) {
+					window.classNumbers['300'] += 1;
+				} else if (classCode[2] == '3') {
+					window.classNumbers['350'] += 1;
+				} else if (classCode[2] == '4') {
+					window.classNumbers['400'] += 1;
+				}
+			}
+		}
+	}
+
+	var gradeInputs = document.getElementsByName('gradeInput');
+
+	gradeInputs[0].disabled = false;
+	gradeInputs[1].disabled = false;
+	gradeInputs[2].disabled = false;
+	gradeInputs[0].value = window.classNumbers['300'] + window.classNumbers['350'] + window.classNumbers['400'];
+	gradeInputs[1].value = 0;
+	gradeInputs[2].value = 0;
+
+	window.window.classNumbers = window.classNumbers;
+	updateGPA();
 }
 
 function updateGPA() {
+	var gradeInputs = document.getElementsByName('gradeInput');
+
 	var numGrades = 0;
-	var gradeInputs = document.getElementsByName('gradeInput')
 	var totalClasses = window.classNumbers['300'] + window.classNumbers['350'] + window.classNumbers['400'];
 
 	for (var x = 0; x < 3; x++) {
@@ -125,17 +169,27 @@ function accessLocalStorage() {
 				}
 			}
 		}
+
+		if (localStorage.getItem('keyOrder') != null && localStorage.getItem('times') != null && localStorage.getItem('colors') != null) {
+			window.keyOrder = localStorage.getItem('keyOrder').split(',');
+			window.times = JSON.parse(localStorage.getItem('times'));
+			window.colors = localStorage.getItem('colors').split(',');
+			console.log(window.keyOrder)
+			console.log(window.times)
+			console.log(window.colors)
+			endCalendarQuestions();
+
+			if (localStorage.getItem('conflicts') != null && localStorage.getItem('timeOptions') != null && localStorage.getItem('possSchedules') != null) {
+				addResults(localStorage.getItem('conflicts').split(','), JSON.parse(localStorage.getItem('timeOptions')), JSON.parse(localStorage.getItem('possSchedules')), false);
+			}
+
+		} else {
+			if (localStorage.getItem('conflicts') != null && localStorage.getItem('timeOptions') != null && localStorage.getItem('possSchedules') != null) {
+				addResults(localStorage.getItem('conflicts').split(','), JSON.parse(localStorage.getItem('timeOptions')), localStorage.getItem('possSchedules'));
+			}
+		}
 	}
 
-	if (localStorage.getItem('keyOrder') != null && localStorage.getItem('times') != null && localStorage.getItem('colors') != null) {
-		window.keyOrder = localStorage.getItem('keyOrder').split(',');
-		window.times = JSON.parse(localStorage.getItem('times'));
-		window.colors = localStorage.getItem('colors').split(',')
-		console.log(window.keyOrder)
-		console.log(window.times)
-		console.log(window.colors)
-		endCalendarQuestions();
-	}
 }
 
 function perWeekStats(times) {
@@ -177,9 +231,6 @@ function perWeekStats(times) {
 	
 }
 
-function updateCalendar(times) { //TODO theres no point of this function. find references and fix.
-	setupCalendarQuestions(times)
-}
 
 function setupCalendarQuestions(times) {
 	document.getElementById('qWrapper').style.display = 'block';
@@ -198,24 +249,54 @@ function getCalendarQuestions(answer, num) {
 		var blankConstant = 1;
 		if (document.getElementById('conflictArea').childNodes[1].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
 			blankConstant++;
-			if (document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
+			if (document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') {
 				blankConstant++;
 			}
 		}
 		window.times = window.times[Number(answer.substr(-1)) - blankConstant];
+		window.possSchedules = window.possSchedules[answer.substr(-1)];
 		window.keyOrder = Object.keys(window.times);
+
+		window.qNum++;
+		enterQuestion(['Auto Generate Schedule', 'Manually Pick Meeting Patterns']);
 	} else {
-		var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
-		window.times[window.keyOrder[window.qNum - 2]] = selectedOption;
-		window.colors.push(document.getElementById('courseColor').value)
-	}
-	window.qNum++;
-	var nextQArr = window.times[window.keyOrder[window.qNum - 2]]
-	if (nextQArr != undefined) {
-		enterQuestion(nextQArr)
-	} else {
-		endCalendarQuestions();
-		return;
+		if (window.qNum == 2) {
+			var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
+			if (selectedOption == 'Auto Generate Schedule') {
+				window.keyOrder = [];
+				window.times = {};
+				window.colors = ['#00FFFF', '#FF0000', '#FFFF00', '#00FF00', '#FF00FF', '#FF8C00', '#800000', '#4B0082'];
+
+				for (var key in window.possSchedules) {
+					window.keyOrder.push(key)
+					window.times[key] = window.possSchedules[key]
+				}
+
+				if (window.colors.length < window.keyOrder.length) {
+					var diffLen = window.keyOrder.length - window.colors.length;
+					for (var x = 0; x < diffLen; x++) {
+						window.colors.push(window.colors[x])
+					}
+				}
+
+				endCalendarQuestions();
+				return;
+			} else {
+				window.qNum++
+			}
+		} else {
+			var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
+			window.times[window.keyOrder[window.qNum - 3]] = selectedOption; //-1 for index difference and -2 to account for first 2 questions
+			window.colors.push(document.getElementById('courseColor').value)
+			window.qNum++;
+		}
+		var nextQArr = window.times[window.keyOrder[window.qNum - 3]]
+		if (nextQArr != undefined) {
+			enterQuestion(nextQArr)
+		} else {
+			endCalendarQuestions();
+			return;
+		}
 	}
 }
 
@@ -229,8 +310,13 @@ function enterQuestion(qArr) {
 		for (x in qArr) {
 			document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '"' + (document.getElementById('t' + qArr[x].substr(-1) + 'ConflictDisplay').innerText != 'No Conflict' ? 'disabled' : '') + '>' + qArr[x] + '</option><br>';
 		}
+	} else if (qArr[0] == 'Auto Generate Schedule') {
+		document.getElementById('qArea').innerHTML += 'Do you know your course meeting patterns and want an accurate schedule or do you want to auto generate a possible schedule with your classes?<br>';
+		for (x in qArr) {
+			document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
+		}
 	} else {
-		document.getElementById('qArea').innerHTML += 'Choose when you are taking ' + window.keyOrder[window.qNum - 2] + '. Also, choose the color you want for that course <input id="courseColor" type="color" value="' + colorPalette[(window.qNum - 2) % colorPalette.length] + '"><br>';
+		document.getElementById('qArea').innerHTML += 'Choose when you are taking <b>' + window.keyOrder[window.qNum - 3] + '</b>. Also, choose the color you want for that course <input id="courseColor" type="color" value="' + colorPalette[(window.qNum - 3) % colorPalette.length] + '"><br>';
 		for (x in qArr) {
 			document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
 		}
@@ -241,6 +327,7 @@ function enterQuestion(qArr) {
 	document.getElementById('qArea').innerHTML += '</select>';
 }
 
+//lol
 function endCalendarQuestions() {
 	document.getElementById('qWrapper').style.display = 'none';
 
@@ -256,17 +343,22 @@ function endCalendarQuestions() {
 	localStorage.setItem('times', JSON.stringify(window.times));
 	localStorage.setItem('colors', window.colors);
 
+	console.log('check 1')
+	console.log(window.keyOrder)
+	console.log(window.times)
+	console.log(window.colors)
+
 	for (x in window.keyOrder) {
-		currClass = window.times[window.keyOrder[x]]
+		currClass = window.times[window.keyOrder[x]] //TODO why does keyOrder need to exist isn't it just times.keys()? idk for sure. Will have to check if .keys() order is consistent ig and if order is needed here.
 		for (var y in currClass) {
 			char = currClass[y]
 			console.log(currBlock + char)
 			if (!isNaN(char) || char == 'L') {
 				document.getElementById(currBlock + char).style.backgroundColor = window.colors[x];
+				document.getElementById(currBlock + char).innerText = window.keyOrder[x];
 				if (document.getElementById(currBlock + char).previousElementSibling.className == 'time') {
 					document.getElementById(currBlock + char).previousElementSibling.style.backgroundColor = window.colors[x];
 					document.getElementById(currBlock + char).previousElementSibling.previousElementSibling.style.backgroundColor = window.colors[x];
-					console.log()
 					if (char != 'L') {
 						if (currClass[Number(y) + 1] == 'L' || ['12:55 to 2:25', '10:45 to 12:15'].indexOf(document.getElementById(currBlock + char).previousElementSibling.innerText) == -1) { //last one means if this isn't a lab block
 							meetingTime = document.getElementById(currBlock + char).previousElementSibling.innerText;
@@ -299,6 +391,11 @@ function endCalendarQuestions() {
 	}
 }
 
+function resetCalendar() {
+	$('.calendar td').each(function() {
+		this.style.backgroundColor = 'white';
+	});
+}
 
 function timeCalc(time, modifier) {
 	console.log(time)
