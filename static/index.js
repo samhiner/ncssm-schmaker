@@ -3,33 +3,52 @@ let row = 1;
 function addRow(num = 1) {
     var firstRow = document.getElementById('mainTable').firstElementChild;
     var table = document.getElementById('mainTable')
-    var cloneRow;
-
-    for (var x = 0; x < num; x++) {
+    var cloneRow = firstRow.cloneNode(true);
+    for (var i = 0; i < num; i++) {
         row++;
-        cloneRow = firstRow.cloneNode(true);
         cloneRow.children[0].firstElementChild.value = '';
+        cloneRow.children[0].firstElementChild.name = 'tri1Choice' + row;
         cloneRow.children[1].firstElementChild.value = '';
+        cloneRow.children[1].firstElementChild.name = 'tri2Choice' + row;
         cloneRow.children[2].firstElementChild.value = '';
-
-        console.log('BBBB')
-        console.log()
-
-
-        cloneRow.children[0].firstElementChild.attributes.list.value = 'tri1Classes' + Date.now();
-        cloneRow.children[0].firstElementChild.nextElementSibling.id = 'tri1Classes' + Date.now();
-        cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
-        cloneRow.children[1].firstElementChild.attributes.list.value = 'tri2Classes' + Date.now();
-        cloneRow.children[1].firstElementChild.nextElementSibling.id = 'tri2Classes' + Date.now();
-        cloneRow.children[1].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
-        cloneRow.children[2].firstElementChild.attributes.list.value = 'tri3Classes' + Date.now();
-        cloneRow.children[2].firstElementChild.nextElementSibling.id = 'tri3Classes' + Date.now();
-        cloneRow.children[2].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
-
-
+        cloneRow.children[2].firstElementChild.name = 'tri3Choice' + row;
         table.insertBefore(cloneRow, document.getElementById('tableControls'))
+            //console.log(cloneRow.children[1].first)
     }
 }
+
+// function addRow(num = 1) {
+//     var firstRow = document.getElementById('mainTable').firstElementChild;
+//     var table = document.getElementById('mainTable')
+//     var cloneRow;
+
+//     for (var x = 0; x < num; x++) {
+//         row++;
+//         cloneRow = firstRow.cloneNode(true);
+//         cloneRow.children[0].firstElementChild.value = '';
+//         cloneRow.children[1].firstElementChild.value = '';
+//         cloneRow.children[2].firstElementChild.value = '';
+
+//         console.log('BBBB')
+//         console.log()
+
+//         cloneRow.children[0].firstElementChild.name = "tri1Classes" + row;
+//         cloneRow.children[1].firstElementChild.name = "tri2Classes" + row;
+//         cloneRow.children[2].firstElementChild.name = "tri3Classes" + row;
+//         cloneRow.children[0].firstElementChild.attributes.list.value = 'tri1Classes' + Date.now();
+//         cloneRow.children[0].firstElementChild.nextElementSibling.id = 'tri1Classes' + Date.now();
+//         cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
+//         cloneRow.children[1].firstElementChild.attributes.list.value = 'tri2Classes' + Date.now();
+//         cloneRow.children[1].firstElementChild.nextElementSibling.id = 'tri2Classes' + Date.now();
+//         cloneRow.children[1].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
+//         cloneRow.children[2].firstElementChild.attributes.list.value = 'tri3Classes' + Date.now();
+//         cloneRow.children[2].firstElementChild.nextElementSibling.id = 'tri3Classes' + Date.now();
+//         cloneRow.children[2].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
+
+
+//         table.insertBefore(cloneRow, document.getElementById('tableControls'))
+//     }
+// }
 
 // function getConflicts() {
 // 	localStorage.removeItem('keyOrder');
@@ -79,25 +98,32 @@ function deleteRow() {
 
 function get_validity() {
     // perWeekStats(times.slice(0));
+    console.log($('#form').serialize());
     $.post('/', $('#form').serialize(), (data) => {
         data2 = JSON.parse(data)
+        console.log(data2);
         data = data2[0]
         sched = data2[1]
         $("#avgGPA").html(data2[2])
         $("#timePerWeek").html(data2[3])
         $("#possib").html(data2[4])
+        manual = data[5];
+        console.log(data);
         for (let i = 1; i <= data.length; i++) {
             if (data[i - 1]) {
                 document.getElementById('t' + i + 'ConflictDisplay').innerHTML = 'No Conflicts';
-                document.getElementById('t' + i + 'ConflictDisplay').style.backgroundColor = "#6F6";
+                document.getElementById('t' + i + 'ConflictDisplay').style.backgroundColor = "lightgreen";
             } else {
                 document.getElementById('t' + i + 'ConflictDisplay').innerHTML = 'Conflicts';
-                document.getElementById('t' + i + 'ConflictDisplay').style.backgroundColor = "#F66";
+                document.getElementById('t' + i + 'ConflictDisplay').style.backgroundColor = "#ee9090";
             }
         }
         keys = ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5", "C1", "C2", "C3", "C4", "C5", "D1", "D2", "D3", "D4", "D5", "E1", "E2", "E3", "E4", "E5", "F1", "F2", "F3", "F4", "F5", "G1", "G2", "G3", "G4", "G5", "H1", "H2", "H3", "H4", "I1", "I2", "I3", "I4", "AL", "BL", "CL", "DL", "EL", "FL", "GL"]
         if (data[0] && data[1] && data[2]) {
             $('#calbuttons').attr('hidden', false);
+            $('#authorize_button').attr('hidden', false);
+            $('hr').attr('hidden', false);
+            $('#yourcal').attr('hidden', false);
             for (let i = 0; i < keys.length; i++) {
                 classes = document.getElementsByClassName(keys[i]);
                 classes[0].innerHTML = sched[0][keys[i]];
@@ -106,6 +132,9 @@ function get_validity() {
             }
         } else {
             $('#calbuttons').attr('hidden', true);
+            $('#authorize_button').attr('hidden', true);
+            $('hr').attr('hidden', true);
+            $('#yourcal').attr('hidden', true);
             hideall();
         }
     });

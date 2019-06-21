@@ -72,19 +72,24 @@ def home():
             # print(f'Choice{i+1}')
             tri1 = r.get(f'tri1Choice{i+1}').split(' ')
             if(tri1[0]):
-                print('tri1',tri1)
+                # print('tri1',tri1)
                 classes[0].append(tri1[0])
             tri2 = r.get(f'tri2Choice{i+1}').split(' ')
             if(tri2[0]):
-                print('tri2',tri2)
+                # print('tri2',tri2)
                 classes[1].append(tri2[0])
             tri3 = r.get(f'tri3Choice{i+1}').split(' ')
             if(tri3[0]):
-                print('tri3',tri3)
+                # print('tri3',tri3)
                 classes[2].append(tri3[0])
         tri1_meetings = [open(f'Schedule/Trimester1/{i}.txt', 'r').read().splitlines()[1:]  for i in classes[0]]
         tri2_meetings = [open(f'Schedule/Trimester2/{i}.txt', 'r').read().splitlines()[1:] for i in classes[1]]
         tri3_meetings = [open(f'Schedule/Trimester3/{i}.txt', 'r').read().splitlines()[1:] for i in classes[2]]
+        # meetings = [tri1_meetings, tri2_meetings, tri3_meetings]
+        # manual = [{},{},{}]
+        # for i in range(3):
+        #     manual[i].update([k for k in zip(classes[i], meetings[i])])
+        # print(manual)
         # print(tri1_meetings)
         # print('\n'.join([repr([parseSchedule(x) for x in i]) for i in tri1_meetings]))
         # print([list(i) for i in product(*tri1_meetings)])
@@ -96,7 +101,7 @@ def home():
         numpos = [len(list(i)) for i in tris]
         numpos = f"Trimester 1: {numpos[0]} combinations<br>Trimester 2: {numpos[1]} combinations<br>Trimester 3: {numpos[2]} combinations<br>"
         success = [tri1_success, tri2_success, tri3_success]
-        print(success)
+        # print(success)
         schedule = []
         if(all(success)):
             for i in product(*tri1_meetings):
@@ -118,7 +123,7 @@ def home():
                     schedule[i].pop(index)
                     classes[i].pop(index)
             schedule = [[(parseSchedule(pattern), classname) for pattern,classname in zip(*i)] for i in zip(schedule, classes)]
-            print(schedule)
+            # print(schedule)
         schedule2 = [{
             'A1':'Free Time',
             'A2':'Free Time',
@@ -288,7 +293,6 @@ def home():
                 n += i
                 c += 1
         gpa = n/c
-            
         if(all(success)):
             for trimester in range(3):
                 for i in range(len(schedule[trimester])):
@@ -305,10 +309,10 @@ def home():
             n = f"Trimester 1: {floor(tris[0]/60)} hrs {tris[0]%60} min<br>Trimester 2: {floor(tris[1]/60)} hrs {tris[1]%60} min<br>Trimester 3: {floor(tris[2]/60)} hrs {tris[2]%60} min"
         else:
             n = "Conflicts Found"
-        print(n)
+        # print(n)
         gpa = str(round(gpa,2))
         gpa = gpa if('.' in gpa) else gpa + '.0'
-        print([success, schedule2, gpa, n, numpos])
+        # print([success, schedule2, gpa, n, numpos, manual])
         return dumps([success, schedule2, gpa, n, numpos])
 
 if __name__ == "__main__":
