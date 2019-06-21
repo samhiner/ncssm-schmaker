@@ -1,0 +1,1511 @@
+<!--
+ERROR HANDLING: Make a warning if all of your rows didn't compute where it tells you which rows failed so you can try again if you want. Maybe put error icon next to bad rows.
+put the backend on my smath acct and use the live spreadsheet
+bugtest a lot by writing a script to test many class combos (every class at least once) and looking at results
+explain how your classes conflict
+get other stats like how many minutes a weeks, meetings a week, gpa, etc. And once times come out create a section that lets you say when you have a class and you can add it to gcal
+abstract the massive options list to work with any course meeting patters spreadsheet
+keep a window variable that has question answers to prevent needing to re-answer, but also let people go back on questions, and redo questions later after they're done
+make results not side by side
+make calendar times accurate
+try fr406 and varsity sports
+maybe give more conflict info by finding which courses get into conflict a lot in permutations. One that got into most conflicts is sent to browser to say "Conflict(s) including X"
+clearl localstorage button
+*serious* refactoring
+
+make duplicate classes work for calendar/quiz/stats ig
+!more than one row on mobile
+!tri 2 classes shouldn't be gcal'd in tri 1
+don't have class events during breaks in gcal
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>NCSSM Schmaker 2019-2020</title>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js'></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto&display=swap' rel='stylesheet'>
+    <link rel='stylesheet' href='{{url_for("static",filename = "assets/datalist_style.css")}}'>
+    <script src='{{url_for("static",filename="index.js")}}'></script>
+    <meta name='viewport' content='width=device-width'>
+    <!--makes media queries register in Google Inspect Element Device-->
+    <link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
+</head>
+
+<body>
+    <div class='banner'>
+        <b>NCSSM Schmaker</b>
+    </div>
+    <h1>Enter Your Courses</h1>
+    Each column represents a trimester. Add new rows and select all of your courses. Then click "Calculate" to get your results.<br><br>
+    <table border='1' align='center' class='entryTable'>
+        <form id="form">
+            <tbody id='mainTable'>
+                <tr>
+                    <td>
+                        <input list='tri1Classes' placeholder='Enter a class name or code.' name='tri1Choice1'>
+                        <datalist id='tri1Classes'>
+					<!--[if lte IE 9]><select data-datalist="tri1Classes"><![endif]-->
+					<option value="AR306 Darkroom Photography"></option><option value="AR320 Drawing"></option><option value="AR322 Painting"></option><option value="AR324 Art and Technology"></option><option value="AS403a Writing & Amer Studies"></option><option value="AS405a American Studies"></option><option value="BI352 Anatomy & Physiology I"></option><option value="BI358 Classical Genetics (*M*)"></option><option value="BI360 Molecular Genetics (*M*)"></option><option value="BI364 Developmental Biology (*R*)"></option><option value="BI374 Ecology (*R*)"></option><option value="BI390 Res Exp-Biology (*R*)"></option><option value="BI404 Climate Change Biology (*M*)"></option><option value="BI434 AP Biology (I) (*R*)"></option><option value="BI446 Research in Biology III (*R*)"></option><option value="CH305a Chemistry by Inquiry"></option><option value="CH353a Chemistry"></option><option value="CH401a AP Chemistry (I)"></option><option value="CH405 AP Chemistry (Adv I)"></option><option value="CH410 Organic Chemistry"></option><option value="CH418 Biochemistry (*R*)"></option><option value="CH446 Research Chem III (*R*)"></option><option value="CN305a Introductory Chinese"></option><option value="CN307a Intermediate Chinese"></option><option value="CN354 Advanced Chinese I"></option><option value="CN404 Readings in Chinese/Topics I"></option><option value="CN454 Advanced Readings in Chinese/Topics I"></option><option value="CS362 Connected Computing"></option><option value="CS402 Web Development"></option><option value="CS406 Scientific Programming"></option><option value="CS422 Databases"></option><option value="CS424 Procedural Programming"></option><option value="CS434 C"></option><option value="DR302 Theater Perf Wrkshp"></option><option value="EE316 Introductory Robotics"></option><option value="EE318 Fundamentals of Engineering"></option><option value="EE402 Electrical Engineering"></option><option value="EE404 Architecture"></option><option value="EE408 Biomedical Engineering"></option><option value="EE418 Environmental Engineering"></option><option value="EN400 East-West Studies I"></option><option value="EN412 Southern Lit/Culture"></option><option value="EN416 Asia I"></option><option value="EN422 Philos/Lit in 20th Century"></option><option value="EN424 Africa I"></option><option value="EN436 Western Euro Cultural Stu I"></option><option value="EN442 Western Civilization: WRRD I"></option><option value="EN448 Topics in Literature I"></option><option value="EN460 STEM and the Stage"></option><option value="EN490 Res in the Humanities I"></option><option value="FR305a Introductory French"></option><option value="FR307a Intermediate French"></option><option value="FR354 Advanced French I"></option><option value="IE404 Engage to Impact"></option><option value="IE405a Mentorship-Senior Research"></option><option value="IE446 Research Computational Sci III"></option><option value="IE449a Entrepreneurship"></option><option value="JA305a Introductory Japanese"></option><option value="JA307a Intermediate Japanese"></option><option value="LA305a Introductory Latin"></option><option value="LA307a Intermediate Latin"></option><option value="LA410 Advanced Latin Prose I"></option><option value="MA355a Precalculus & Modeling"></option><option value="MA360 Investigations in Calculus I"></option><option value="MA404 AP Statistics (I)"></option><option value="MA410 AP Calc AB (Adv Topics I)"></option><option value="MA430 AP Calc BC (Adv Topics I)"></option><option value="MA434 AP Calc BC (Adv Topics III)"></option><option value="MA440 AP Statistics (Adv Topics I)"></option><option value="MA454 Modeling/Differential Eq's"></option><option value="MA466 Graph Theory/Intro Proof"></option><option value="MA470 Mathematical Modeling"></option><option value="MA474 Research in Mathematics II"></option><option value="MS312 Classical Piano and Guitar"></option><option value="MS322 Music Theory and Composition"></option><option value="MS350 Jazz Perf Workshop"></option><option value="MU302 Chorale"></option><option value="MU360 Wind Ensemble"></option><option value="MU370 Orchestra"></option><option value="PA104 Archery"></option><option value="PA112 Tennis"></option><option value="PA118 Racquetball"></option><option value="PA136 Hiking"></option><option value="PA140 Self Defense"></option><option value="PA142 Weight Trng/Sprts & Fitness"></option><option value="PA146 Pilates & Yoga"></option><option value="PA162 Rock Wall Climbing"></option><option value="PH353a Physics"></option><option value="PH401a Physics with Advanced Topics (*M*)"></option><option value="PH404 AP Physics C: Mech (I)"></option><option value="PH414 Advanced Physics Problem Solving"></option><option value="PH416 Quantum Mechanics"></option><option value="PH418 Astrophysics"></option><option value="PH446 Research in Physics III (*R*)"></option><option value="RE102 Cornerstone"></option><option value="RE110 Exploring MultiCultural Amer"></option><option value="RE112 Public Speaking"></option><option value="RE116 Marketing You"></option><option value="RE120 Financial Planning"></option><option value="SE352 Emergency Care I"></option><option value="SEM002 Introduction to Pre-Calculus Seminar"></option><option value="SEM004 Introduction to Calculus Seminar"></option><option value="SEM006 Calculus Capstone Seminar"></option><option value="SP305a Introductory Spanish"></option><option value="SP307a Intermediate Spanish"></option><option value="SP354 Advanced Spanish I"></option><option value="SP404 Rdgs in Spanish/Topics I"></option><option value="SS368 Sociology"></option><option value="SS402 AP Microeconomics"></option><option value="SS406 Intro Psychology"></option><option value="VS102 Men's Soccer"></option><option value="VS104 Women's Volleyball"></option><option value="VS106 Women's Tennis"></option><option value="VS108 Cross-Country"></option><option value="VS110 Competitive Cheer"></option><option value="VS112 Women's Golf"></option>
+					<!--[if lte IE 9]></select><![endif]-->
+				</datalist>
+                    </td>
+                    <td>
+                        <input list='tri2Classes' placeholder='Enter a class name or code.' name='tri2Choice1'>
+                        <datalist id='tri2Classes'>
+					<!--[if lte IE 9]><select data-datalist="tri2Classes"><![endif]-->
+					<option value="AR306 Darkroom Photography"></option><option value="AR318 Open Studio"></option><option value="AR320 Drawing"></option><option value="AR322 Painting"></option><option value="AR324 Art and Technology"></option><option value="AR350 Advanced Drawing"></option><option value="AR352 Advanced Painting"></option><option value="AR354 Advanced Studio Art"></option><option value="AS403b Writing & Amer Studies"></option><option value="AS405b American Studies"></option><option value="BI352 Anatomy & Physiology I"></option><option value="BI356 Sports Kinesiology I"></option><option value="BI358 Classical Genetics (*M*)"></option><option value="BI360 Molecular Genetics (*M*)"></option><option value="BI370 Evolution"></option><option value="BI402 Evolution/Adv Topics (*M*)"></option><option value="BI406 Neuroscience (*R*)"></option><option value="BI424 AP Enviro Science (I)"></option><option value="BI436 AP Biology (II) (*R*)"></option><option value="BI442 Research in Biology I (*R*)"></option><option value="BI448 Research in Biology IV (*R*)"></option><option value="CH305b Chemistry by Inquiry"></option><option value="CH353a Chemistry"></option><option value="CH353b Chemistry"></option><option value="CH401b AP Chemistry (I)"></option><option value="CH405b AP Chemistry (Adv I)"></option><option value="CH418 Biochemistry (*R*)"></option><option value="CH442 Research Chem I (*R*)"></option><option value="CH448 Research Chem IV (*R*)"></option><option value="IE442 Research Computational Sci I"></option><option value="CN305b Introductory Chinese"></option><option value="CN307b Intermediate Chinese"></option><option value="CN356 Advanced Chinese II"></option><option value="CN406 Readings in Chinese/Topics II"></option><option value="CN456 Advanced Readings in Chinese/Topics II"></option><option value="CS358 Cryptography"></option><option value="CS364 Connected Computing II"></option><option value="CS402 Web Development"></option><option value="CS424 Procedural Programming"></option><option value="CS426 Java"></option><option value="CS434 C"></option><option value="DR304 Theater Perf Wrkshp"></option><option value="EE310 CAD/CAM"></option><option value="EE316 Introductory Robotics"></option><option value="EE370 Biomechanics of Injury"></option><option value="EE390 Rsch Exp in Engr"></option><option value="EE402 Electrical Engineering"></option><option value="EE404 Architecture"></option><option value="EE408 Biomedical Engineering"></option><option value="EE416 Civil Engineering"></option><option value="EE442 Rsch in Engr and CS I"></option><option value="EE452 Biomedical Instrumentation"></option><option value="EN390 Res Exp-Humanities"></option><option value="EN400 East-West Studies I"></option><option value="EN404 Brit Lit/Cult 1603-1837"></option><option value="EN412 Southern Lit/Culture"></option><option value="EN414 Modern World Fiction"></option><option value="EN418 Asia II"></option><option value="EN424 Africa I"></option><option value="EN438 Western Euro Cultural Stu II"></option><option value="EN444 Western Civilization: WRRD II"></option><option value="EN448 Topics in Literature I"></option><option value="EN450 Topics in Literature II"></option><option value="EN492 Res in the Humanities II"></option><option value="FR305b Introductory French"></option><option value="FR307b Intermediate French"></option><option value="FR356 Advanced French II"></option><option value="HU366 Critical Race Theory"></option><option value="IE405b Mentorship-Senior Research"></option><option value="IE449b Entrepreneurship"></option><option value="IE450 Applications in Entrepreneurship"></option><option value="JA305b Introductory Japanese"></option><option value="JA307b Intermediate Japanese"></option><option value="LA305b Introductory Latin"></option><option value="LA307b Intermediate Latin"></option><option value="LA412 Advanced Latin Prose II"></option><option value="MA355b Precalculus & Modeling"></option><option value="MA358 Cryptography"></option><option value="MA362 Investigations in Calculus II"></option><option value="MA406 AP Statistics (II)"></option><option value="MA412 AP Calc AB (Adv Topics II)"></option><option value="MA432 AP Calc BC (Adv Topics II)"></option><option value="MA436 Adv Probability Models"></option><option value="MA442 AP Statistics (Adv Topics II)"></option><option value="MA458 Intro to Complex Systems"></option><option value="MA464 Combinatorics & Game Theory"></option><option value="MA478 Advanced Combinatorics"></option><option value="MA480 Vector Funct/Partial Derivs"></option><option value="MS314 Classical Piano and Guitar"></option><option value="MS336 Audio/Digital Music Prod"></option><option value="MS352 Jazz Perf Workshop"></option><option value="MU304 Chorale"></option><option value="MU362 Wind Ensemble"></option><option value="MU372 Orchestra"></option><option value="PA118 Racquetball"></option><option value="PA126 Badminton"></option><option value="PA140 Self Defense"></option><option value="PA142 Weight Trng/Sprts & Fitness"></option><option value="PA146 Pilates & Yoga"></option><option value="PA162 Rock Wall Climbing"></option><option value="PH353b Physics"></option><option value="PH401a Physics with Advanced Topics (*M*)"></option><option value="PH401b Physics/Adv Topics"></option><option value="PH402 Physics with Advanced Topics II"></option><option value="PH406 AP Physics C:Mech (II)/E&M (I)"></option><option value="PH418 Astrophysics"></option><option value="PH442 Research in Physics I (*R*)"></option><option value="PH448 Research in Physics IV (*R*)"></option><option value="RE110 Exploring MultiCultural Amer"></option><option value="RE112 Public Speaking"></option><option value="RE116 Marketing You"></option><option value="RE118 Excellence in Leadership"></option><option value="RE120 Financial Planning"></option><option value="SE352 Emergency Care I"></option><option value="SP305b Introductory Spanish"></option><option value="SP307b Intermediate Spanish"></option><option value="SP356 Advanced Spanish II"></option><option value="SP406 Rdgs in Spanish/Topics II"></option><option value="SS360 Topics Hist/Social Sci"></option><option value="SS366 Topics in Psychology"></option><option value="SS372 Medical Sociology"></option><option value="SS404 AP Macroeconomics"></option><option value="SS406 Intro Psychology"></option><option value="VS122 Men's Basketball"></option><option value="VS124 Women's Basketball"></option><option value="VS126 Swimming"></option><option value="VS128 Wrestling"></option><option value="VS130 Cheerleading"></option><option value="VS132 Indoor Track"></option><option value="VS134 Diving"></option>
+					<!--[if lte IE 9]></select><![endif]-->
+				</datalist>
+                    </td>
+                    <td>
+                        <input list='tri3Classes' placeholder='Enter a class name or code.' name='tri3Choice1'>
+                        <datalist id='tri3Classes'>
+					<!--[if lte IE 9]><select data-datalist="tri3Classes"><![endif]-->
+					<option value="AR306 Darkroom Photography"></option><option value="AR318 Open Studio"></option><option value="AR320 Drawing"></option><option value="AR322 Painting"></option><option value="AR324 Art and Technology"></option><option value="AR350 Advanced Drawing"></option><option value="AR352 Advanced Painting"></option><option value="AR354 Advanced Studio Art"></option><option value="AS403c Writing & Amer Studies"></option><option value="AS405c American Studies"></option><option value="BI360 Molecular Genetics (*M*)"></option><option value="BI364 Developmental Biology (*R*)"></option><option value="BI390 Res Exp-Biology (*R*)"></option><option value="BI400 Aquatic Ecology (*R*)"></option><option value="BI408 Sports Kinesiology II"></option><option value="BI410 Molecular & Cellular Biol"></option><option value="BI416 Anat Physiology II (*R*)"></option><option value="BI422 Immunology (*R*)"></option><option value="BI426 AP Enviro Science (II)"></option><option value="BI438 AP Biology (III) (*R*)"></option><option value="BI444 Research in Biology II (*R*)"></option><option value="CH305c Chemistry by Inquiry"></option><option value="CH353b Chemistry"></option><option value="CH402 AP Chemistry (II)"></option><option value="CH406 AP Chemistry (Adv II)"></option><option value="CH408 Analytical Chemistry"></option><option value="CH410 Organic Chemistry"></option><option value="CH416 Environmental Chem (*R*)"></option><option value="CH422 Polymer Chemistry"></option><option value="CH428 Materials Chemistry (*R*)"></option><option value="CH444 Research Chem II (*R*)"></option><option value="CN305c Introductory Chinese"></option><option value="CN307c Intermediate Chinese"></option><option value="CN358 Advanced Chinese III"></option><option value="CN408 Readings in Chinese/Topics III"></option><option value="CN458 Advanced Readings in Chinese/Topics III"></option><option value="CS360 Artistic Computing"></option><option value="CS402 Web Development"></option><option value="CS424 Procedural Programming"></option><option value="CS426 Java"></option><option value="CS428 Advanced Java"></option><option value="CS436 Data Structures"></option><option value="DR306 Theater Perf Wrkshp"></option><option value="EE362 Engineering the Modern"></option><option value="EE400 Mechanical Engineering"></option><option value="EE402 Electrical Engineering"></option><option value="EE408 Biomedical Engineering"></option><option value="EE418 Environmental Engineering"></option><option value="EE444 Rsch in Engr and CS II"></option><option value="EE454 Statics"></option><option value="EE456 Circuits"></option><option value="EN354 Fiction Writing"></option><option value="EN356 Film Studies"></option><option value="EN366 Poetry Writing"></option><option value="EN390 Res Exp-Humanities"></option><option value="EN406 Brit Lit/Cult 1837-Present"></option><option value="EN408 East-West Studies II"></option><option value="EN412 Southern Lit/Culture"></option><option value="EN420 Asia III"></option><option value="EN422 Philos/Lit in 20th Century"></option><option value="EN426 Africa II"></option><option value="EN440 Western Euro Cultural Stu III"></option><option value="EN446 Western Civilization: WRRD III"></option><option value="EN462 Shakespeare Now"></option><option value="FR305c Introductory French"></option><option value="FR307c Intermediate French"></option><option value="FR358 Advanced French III"></option><option value="FR406 Modern French Readings/Media II"></option><option value="HU354 Black Studies"></option><option value="HU356 History Western Music"></option><option value="HU364 Women's Studies"></option><option value="IE308 Explorations in Mentorship"></option><option value="IE360 Digital Humanities"></option><option value="IE406 Mentorship-Extended Research"></option><option value="IE444 Research Computational Sci II"></option><option value="JA305c Introductory Japanese"></option><option value="JA307c Intermediate Japanese"></option><option value="LA305c Introductory Latin"></option><option value="LA307c Intermediate Latin"></option><option value="LA414 Advanced Latin Prose III"></option><option value="MA355c Precalculus & Modeling"></option><option value="MA368 Finite Mathematics"></option><option value="MA408 AP Statistics (III)"></option><option value="MA414 AP Calc AB (Adv Topics III)"></option><option value="MA434 AP Calc BC (Adv Topics III)"></option><option value="MA444 AP Statistics (Adv Topics III)"></option><option value="MA454 Modeling/Differential Eq's"></option><option value="MA456 Numerical Analysis"></option><option value="MA460 Number Theory"></option><option value="MA466 Graph Theory/Intro Proof"></option><option value="MA468 Structure&Dynamics/Mdrn Networks"></option><option value="MA472 Research in Mathematics I"></option><option value="MA476 Abstract Algebra"></option><option value="MA482 Multiple Intgrls/Vector Flds"></option><option value="MS316 Classical Piano and Guitar"></option><option value="MS354 Jazz Perf Workshop"></option><option value="MS402 AP Music Theory"></option><option value="MU306 Chorale"></option><option value="MU364 Wind Ensemble"></option><option value="MU374 Orchestra"></option><option value="PA102 Disc Golf"></option><option value="PA108 Ultimate Frisbee"></option><option value="PA112 Tennis"></option><option value="PA118 Racquetball"></option><option value="PA136 Hiking"></option><option value="PA140 Self Defense"></option><option value="PA142 Weight Trng/Sprts & Fitness"></option><option value="PA146 Pilates & Yoga"></option><option value="PA162 Rock Wall Climbing"></option><option value="PH304 Astronomy"></option><option value="PH352 Waves Sound and Optics"></option><option value="PH353c Physics"></option><option value="PH390 Research Experience in Physics (*R*)"></option><option value="PH401b Physics/Adv Topics"></option><option value="PH408 AP Physics C: E&M (II)"></option><option value="PH410 Modern Physics"></option><option value="PH412 Computational Physics"></option><option value="PH444 Research in Physics II (*R*)"></option><option value="RE110 Exploring MultiCultural Amer"></option><option value="RE112 Public Speaking"></option><option value="RE116 Marketing You"></option><option value="RE118 Excellence in Leadership"></option><option value="RE120 Financial Planning"></option><option value="RE122 NCSSM to College"></option><option value="SE402 Emergency Care II"></option><option value="SP305c Introductory Spanish"></option><option value="SP307c Intermediate Spanish"></option><option value="SP358 Advanced Spanish III"></option><option value="SP408 Rdgs in Spanish/Topics III"></option><option value="SS358 International Relations"></option><option value="SS360 Topics Hist/Social Sci"></option><option value="SS362 Topics Hist/Social Sci II"></option><option value="SS366 Topics in Psychology"></option><option value="SS368 Sociology"></option><option value="SS372 Medical Sociology"></option><option value="SS406 Intro Psychology"></option><option value="SS412 Enviro Econ Systems"></option><option value="SS414 Contemporary Challenges in Economics"></option><option value="VS142 Men's Golf"></option><option value="VS144 Men's Tennis"></option><option value="VS146 Men's Baseball"></option><option value="VS148 Women's Softball"></option><option value="VS150 Women's Soccer"></option><option value="VS152 Track and Field"></option>
+					<!--[if lte IE 9]></select><![endif]-->
+				</datalist>
+                    </td>
+                </tr>
+                <tr id='tableControls'>
+                    <td>
+                        <button onclick='addRow()'>Add Row</button>
+                    </td>
+                    <td>
+                        <button onclick='get_validity()'><b>Calculate<b></button>
+                    </td>
+                    <td>
+                        <button onclick='deleteRow()'>Delete Row</button>
+                    </td>
+                </tr>
+            </tbody>
+        </form>
+    </table><br><br>
+
+    <hr style='margin-bottom: 0.7em'>
+
+
+
+
+    <div style='font-size: 3vh; font-weight: bold;'>Your Results</div>
+
+
+    <br>
+    <table border='1' align='center' class='conflictTable'>
+        <tbody>
+            <tr style='background-color: lightgrey'>
+                <td>Trimester 1</td>
+                <td>Trimester 2</td>
+                <td>Trimester 3</td>
+            </tr>
+            <tr id='conflictArea'>
+                <td id='t1ConflictDisplay' style='background-color: #eed390'>Click Calculate to Find Conflicts</td>
+                <td id='t2ConflictDisplay' style='background-color: #eed390'>Click Calculate to Find Conflicts</td>
+                <td id='t3ConflictDisplay' style='background-color: #eed390'>Click Calculate to Find Conflicts</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class='stats'><br><br> Number of Classes Each Week
+        <span style='float:right;' id='classesPerWeek'>N/A</span><br><br> Time Spent in Class Each Week<span style='float:right; text-align: right;' id='timePerWeek'>N/A</span><br><br><br>
+        <details>
+            <summary>Maximum GPA This Year<span style='float:right;' id='avgGPA'>N/A</span><br><br></summary>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expected A Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expected B Grades:
+            <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expected C Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'
+                disabled><br><br>
+        </details>
+    </div><br>
+    <hr style='margin-bottom: 0.7em'>
+    <div>
+        <div style='font-size: 3vh; font-weight: bold;'>Your Calendar</div><br>
+        <div id="calbuttons" hidden><button onclick="view1();">Trimester 1</button><button onclick="view2();">Trimester 2</button><button onclick="view3();">Trimester 3</button><button class="clear" onclick="clear_func();">Clear Calendars</button><button onclick="printer();">Print!</button></button>
+        </div><br>
+
+        <!-- <div id='qWrapper' style='display: none; border: 1px solid black;'> -->
+        <!-- <div id='qArea'></div> -->
+        <!-- <button onclick='getCalendarQuestions()'>Next Question</button> -->
+        <!-- </div><br> -->
+
+        <div id="Timetable 2018-19 - MyNCSSM_18916" align=center x:publishsource="Excel" class="timetable1" hidden>
+
+            <table border=0 cellpadding=0 cellspacing=0 width=1191 style='border-collapse:
+            collapse;table-layout:fixed;width:896pt' class="table1">
+                <col width=36 style='mso-width-source:userset;mso-width-alt:1316;width:27pt'>
+                <col width=57 style='mso-width-source:userset;mso-width-alt:2084;width:43pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=56 style='mso-width-source:userset;mso-width-alt:2048;width:42pt'>
+                <col width=63 style='mso-width-source:userset;mso-width-alt:2304;width:47pt'>
+                <col width=137 style='mso-width-source:userset;mso-width-alt:5010;width:103pt'>
+                <col width=45 style='mso-width-source:userset;mso-width-alt:1645;width:34pt'>
+                <col width=56 style='mso-width-source:userset;mso-width-alt:2048;width:42pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=40 style='mso-width-source:userset;mso-width-alt:1462;width:30pt'>
+                <col width=55 style='mso-width-source:userset;mso-width-alt:2011;width:41pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=49 style='mso-width-source:userset;mso-width-alt:1792;width:37pt'>
+                <col width=61 style='mso-width-source:userset;mso-width-alt:2230;width:46pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <tr height=48 style='mso-height-source:userset;height:36.0pt'>
+                    <td colspan=15 height=48 class=xl15018916 width=1191 style='height:36.0pt;
+            width:896pt'>Trimester 1 Schedule</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td colspan=3 height=46 class=xl15118916 style='border-right:.5pt solid black;
+            height:34.5pt'>MONDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+            border-left:none'>TUESDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+            border-left:none'>WEDNESDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+            border-left:none'>THURSDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:1.0pt solid black;
+            border-left:none'>FRIDAY</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td colspan=2 height=46 class=xl11818916 style='border-right:.5pt solid black;
+            height:34.5pt'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl14918916 style='border-bottom:1.0pt solid black'><span class="A1">A1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+            border-top:none;width:47pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl9018916 style='border-bottom:1.0pt solid black'><span class="C2">C2</span></td>
+                    <td rowspan=2 class=xl10018916 style='border-bottom:.5pt solid black;
+            border-top:none'>1</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+            border-top:none;width:42pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl15218916 style='border-bottom:1.0pt solid black'><span class="B3">B3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+            border-top:none;width:41pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl14818916 style='border-bottom:1.0pt solid black'><span class="D4">D4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+            border-top:none;width:46pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl12618916 style='border-bottom:1.0pt solid black'><span class="A5">A5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl16118916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="B1">B1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+            border-top:none;width:47pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl15318916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="D2">D2</span></td>
+                    <td rowspan=2 class=xl9618916 style='border-bottom:.5pt solid black;
+            border-top:none'>2</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+            border-top:none;width:42pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl12218916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="A3">A3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+            border-top:none;width:41pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl14718916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="C4">C4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+            border-top:none;width:46pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl14518916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="B5">B5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl16218916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="C1">C1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+            border-top:none;width:47pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl15218916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="B2">B2</span></td>
+                    <td rowspan=2 class=xl9618916 style='border-top:none'>3</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+            border-top:none;width:42pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl9818916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="D3">D3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+            border-top:none;width:41pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl14418916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="A4">A4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+            border-top:none;width:46pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl12318916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="C5">C5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>4</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl13218916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="D1">D1</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>4</td>
+                    <td rowspan=2 class=xl16018916 width=63 style='border-bottom:.5pt solid black;
+            border-top:none;width:47pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl8818916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="A2">A2</span></td>
+                    <td rowspan=3 class=xl10018916 style='border-bottom:1.0pt solid black'>4</td>
+                    <td rowspan=2 class=xl9218916 width=56 style='border-bottom:.5pt solid black;
+            border-top:none;width:42pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl9018916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="C3">C3</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>4</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:.5pt solid black;
+            border-top:none;width:41pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl14518916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="B4">B4</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>4</td>
+                    <td rowspan=2 class=xl9418916 width=61 style='border-bottom:.5pt solid black;
+            border-top:none;width:46pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl9818916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="D5">D5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>11:35 to 12:30</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+            border-top:none'>LUNCH</td>
+                    <td class=xl6518916 width=63 style='border-top:none;width:47pt'>11:35 to 12:15</td>
+                    <td class=xl6618916 style='border-left:none'><span class="AL">AL</span></td>
+                    <td class=xl6718916 width=56 style='width:42pt'>11:35 to 12:15</td>
+                    <td class=xl6818916><span class="CL">CL</span></td>
+                    <td class=xl6918916 width=55 style='width:41pt'>11:35 to 12:15</td>
+                    <td class=xl7018916><span class="BL">BL</span></td>
+                    <td class=xl7118916 width=61 style='width:46pt'>11:35 to 12:15</td>
+                    <td class=xl7218916 style='border-left:none'><span class="DL">DL</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl10718916 style='height:69.0pt;border-top:
+            none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=63 style='border-bottom:1.0pt solid black;
+            border-top:none;width:47pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+            border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+            border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=56 style='border-bottom:1.0pt solid black;
+            border-top:none;width:42pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+            border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+            border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=55 style='border-bottom:1.0pt solid black;
+            border-top:none;width:41pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl14218916 style='border-bottom:1.0pt solid black;
+            border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+            border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=61 style='border-bottom:1.0pt solid black;
+            border-top:none;width:46pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+            border-top:none'>LUNCH</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>12:30 to 1:20</td>
+                    <td rowspan=2 class=xl13318916 style='border-bottom:1.0pt solid black;
+            border-top:none'>MEETING</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=3 height=138 class=xl8518916 style='border-bottom:.5pt solid black;
+            height:103.5pt'>5</td>
+                    <td class=xl7318916 width=63 style='border-top:none;width:47pt'>12:55 to 1:35</td>
+                    <td class=xl7418916 style='border-top:none;border-left:none'><span class="EL">EL</span></td>
+                    <td rowspan=2 class=xl10018916 style='border-bottom:1.0pt solid black;
+            border-top:none'>5</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:.5pt solid black;
+            border-top:none;width:42pt'>12:55 to 1:45</td>
+                    <td rowspan=2 class=xl15418916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="G3">G3</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:.5pt solid black;
+            border-top:none'>5</td>
+                    <td class=xl7318916 width=55 style='border-top:none;width:41pt'>12:55 to 1:35</td>
+                    <td class=xl7518916 style='border-top:none;border-left:none'><span class="FL">FL</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:.5pt solid black;
+            border-top:none'>5</td>
+                    <td class=xl7618916 width=61 style='border-top:none;width:46pt'>12:55 to 1:35</td>
+                    <td class=xl7718916 style='border-top:none;border-left:none'><span class="GL">GL</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>5</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>1:25 to 2:15</td>
+                    <td rowspan=2 class=xl13418916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="E1">E1</span></td>
+                    <td rowspan=2 class=xl10918916 width=63 style='border-bottom:1.0pt solid black;
+            width:47pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl13418916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="E2">E2</span></td>
+                    <td rowspan=2 class=xl10918916 width=55 style='border-bottom:1.0pt solid black;
+            width:41pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl14318916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="F4">F4</span></td>
+                    <td rowspan=2 class=xl13618916 width=61 style='border-bottom:1.0pt solid black;
+            width:46pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl12518916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="G5">G5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl10318916 style='border-bottom:.5pt solid black;
+            height:69.0pt'>6</td>
+                    <td rowspan=2 class=xl15618916 width=56 style='border-bottom:.5pt solid black;
+            width:42pt'>1:50 to 2:40</td>
+                    <td rowspan=2 class=xl15518916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="E3">E3</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>6</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>2:20 to 3:10</td>
+                    <td rowspan=2 class=xl10818916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="F1">F1</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+            border-top:none'>6</td>
+                    <td rowspan=2 class=xl10918916 width=63 style='border-bottom:1.0pt solid black;
+            width:47pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl15418916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="G2">G2</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+            border-top:none'>6</td>
+                    <td rowspan=2 class=xl10918916 width=55 style='border-bottom:1.0pt solid black;
+            width:41pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl14618916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="G4">G4</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+            border-top:none'>6</td>
+                    <td rowspan=2 class=xl13618916 width=61 style='border-bottom:1.0pt solid black;
+            width:46pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl12718916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="F5">F5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl9618916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>7</td>
+                    <td rowspan=2 class=xl15818916 width=56 style='border-bottom:.5pt solid black;
+            border-top:none;width:42pt'>2:45 to 3:35</td>
+                    <td rowspan=2 class=xl10118916 style='border-top:none'><span class="F3">F3</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:69.0pt;border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+            border-top:none;width:43pt'>3:15 to 4:05</td>
+                    <td rowspan=2 class=xl13518916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="G1">G1</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+            border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+            border-top:none;width:47pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl14318916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="F2">F2</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+            border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+            border-top:none;width:41pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl13718916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="E4">E4</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+            border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+            border-top:none;width:46pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl13718916 style='border-bottom:1.0pt solid black;
+            border-top:none'><span class="E5">E5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td height=46 class=xl7818916 style='height:34.5pt'>&nbsp;</td>
+                    <td class=xl7918916 width=56 style='border-top:none;width:42pt'>3:40 - 4:20</td>
+                    <td class=xl8018916 style='border-left:none'>Meeting</td>
+                </tr>
+                <tr height=23 style='mso-height-source:userset;height:17.25pt'>
+                    <td height=23 class=xl6418916 style='height:17.25pt'></td>
+                    <td colspan=14 rowspan=2 class=xl15918916 width=1155 style='width:869pt'></td>
+                </tr>
+                <tr height=23 style='mso-height-source:userset;height:17.25pt'>
+                    <td height=23 class=xl6418916 style='height:17.25pt'></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=9 height=334 class=xl12918916 width=36 style='border-bottom:1.0pt solid black;
+            height:250.5pt;width:27pt'>E V E N I N G</td>
+                    <td class=xl8118916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=190 style='border-right:1.0pt solid black;
+            border-left:none;width:143pt'>MONDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=182 style='border-right:1.0pt solid black;
+            width:137pt'>TUESDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=174 style='border-right:1.0pt solid black;
+            width:131pt'>WEDNESDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=183 style='border-right:1.0pt solid black;
+            width:138pt'>THURSDAY</td>
+                    <td colspan=2 rowspan=9 class=xl13818916 width=195 style='border-right:1.0pt solid black;
+            border-bottom:1.0pt solid black;width:147pt'>&nbsp;</td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                    <td rowspan=4 height=144 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:108.0pt;border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+            border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=56 style='border-bottom:1.0pt solid black;
+            border-top:none;width:42pt'><span class="H1">H1</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=137 style='border-bottom:1.0pt solid black;
+            border-top:none;width:103pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=45 style='border-bottom:1.0pt solid black;
+            border-top:none;width:34pt'><span class="H2">H2</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+            border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=40 style='border-bottom:1.0pt solid black;
+            border-top:none;width:30pt'><span class="H3">H3</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+            border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=49 style='border-bottom:1.0pt solid black;
+            border-top:none;width:37pt'><span class="H4">H4</span></td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                    <td rowspan=4 height=144 class=xl8518916 style='border-bottom:1.0pt solid black;
+            height:108.0pt;border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+            border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=56 style='border-bottom:1.0pt solid black;
+            border-top:none;width:42pt'><span class="I1">I1</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=137 style='border-bottom:1.0pt solid black;
+            border-top:none;width:103pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=45 style='border-bottom:1.0pt solid black;
+            border-top:none;width:34pt'><span class="I2">I2</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+            border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=40 style='border-bottom:1.0pt solid black;
+            border-top:none;width:30pt'><span class="I3">I3</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+            border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+            border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=49 style='border-bottom:1.0pt solid black;
+            border-top:none;width:37pt'><span class="I4">I4</span></td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <![if supportMisalignedColumns]>
+                <tr height=0 style='display:none'>
+                    <td width=36 style='width:27pt'></td>
+                    <td width=57 style='width:43pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=56 style='width:42pt'></td>
+                    <td width=63 style='width:47pt'></td>
+                    <td width=137 style='width:103pt'></td>
+                    <td width=45 style='width:34pt'></td>
+                    <td width=56 style='width:42pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=40 style='width:30pt'></td>
+                    <td width=55 style='width:41pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=49 style='width:37pt'></td>
+                    <td width=61 style='width:46pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                </tr>
+                <![endif]>
+            </table>
+
+        </div>
+        <div id="Timetable 2018-19 - MyNCSSM_18916" align=center x:publishsource="Excel" class="timetable2" hidden>
+
+            <table border=0 cellpadding=0 cellspacing=0 width=1191 style='border-collapse:
+                collapse;table-layout:fixed;width:896pt' class="table2">
+                <col width=36 style='mso-width-source:userset;mso-width-alt:1316;width:27pt'>
+                <col width=57 style='mso-width-source:userset;mso-width-alt:2084;width:43pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=56 style='mso-width-source:userset;mso-width-alt:2048;width:42pt'>
+                <col width=63 style='mso-width-source:userset;mso-width-alt:2304;width:47pt'>
+                <col width=137 style='mso-width-source:userset;mso-width-alt:5010;width:103pt'>
+                <col width=45 style='mso-width-source:userset;mso-width-alt:1645;width:34pt'>
+                <col width=56 style='mso-width-source:userset;mso-width-alt:2048;width:42pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=40 style='mso-width-source:userset;mso-width-alt:1462;width:30pt'>
+                <col width=55 style='mso-width-source:userset;mso-width-alt:2011;width:41pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=49 style='mso-width-source:userset;mso-width-alt:1792;width:37pt'>
+                <col width=61 style='mso-width-source:userset;mso-width-alt:2230;width:46pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <tr height=48 style='mso-height-source:userset;height:36.0pt'>
+                    <td colspan=15 height=48 class=xl15018916 width=1191 style='height:36.0pt;
+                width:896pt'>Trimester 2 Schedule</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td colspan=3 height=46 class=xl15118916 style='border-right:.5pt solid black;
+                height:34.5pt'>MONDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+                border-left:none'>TUESDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+                border-left:none'>WEDNESDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+                border-left:none'>THURSDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:1.0pt solid black;
+                border-left:none'>FRIDAY</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td colspan=2 height=46 class=xl11818916 style='border-right:.5pt solid black;
+                height:34.5pt'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl14918916 style='border-bottom:1.0pt solid black'><span class="A1">A1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                border-top:none;width:47pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl9018916 style='border-bottom:1.0pt solid black'><span class="C2">C2</span></td>
+                    <td rowspan=2 class=xl10018916 style='border-bottom:.5pt solid black;
+                border-top:none'>1</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+                border-top:none;width:42pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl15218916 style='border-bottom:1.0pt solid black'><span class="B3">B3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                border-top:none;width:41pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl14818916 style='border-bottom:1.0pt solid black'><span class="D4">D4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                border-top:none;width:46pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl12618916 style='border-bottom:1.0pt solid black'><span class="A5">A5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl16118916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="B1">B1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                border-top:none;width:47pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl15318916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="D2">D2</span></td>
+                    <td rowspan=2 class=xl9618916 style='border-bottom:.5pt solid black;
+                border-top:none'>2</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+                border-top:none;width:42pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl12218916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="A3">A3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                border-top:none;width:41pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl14718916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="C4">C4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                border-top:none;width:46pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl14518916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="B5">B5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl16218916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="C1">C1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                border-top:none;width:47pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl15218916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="B2">B2</span></td>
+                    <td rowspan=2 class=xl9618916 style='border-top:none'>3</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+                border-top:none;width:42pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl9818916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="D3">D3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                border-top:none;width:41pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl14418916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="A4">A4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                border-top:none;width:46pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl12318916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="C5">C5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>4</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl13218916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="D1">D1</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>4</td>
+                    <td rowspan=2 class=xl16018916 width=63 style='border-bottom:.5pt solid black;
+                border-top:none;width:47pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl8818916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="A2">A2</span></td>
+                    <td rowspan=3 class=xl10018916 style='border-bottom:1.0pt solid black'>4</td>
+                    <td rowspan=2 class=xl9218916 width=56 style='border-bottom:.5pt solid black;
+                border-top:none;width:42pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl9018916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="C3">C3</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>4</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:.5pt solid black;
+                border-top:none;width:41pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl14518916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="B4">B4</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>4</td>
+                    <td rowspan=2 class=xl9418916 width=61 style='border-bottom:.5pt solid black;
+                border-top:none;width:46pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl9818916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="D5">D5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>11:35 to 12:30</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                border-top:none'>LUNCH</td>
+                    <td class=xl6518916 width=63 style='border-top:none;width:47pt'>11:35 to 12:15</td>
+                    <td class=xl6618916 style='border-left:none'><span class="AL">AL</span></td>
+                    <td class=xl6718916 width=56 style='width:42pt'>11:35 to 12:15</td>
+                    <td class=xl6818916><span class="CL">CL</span></td>
+                    <td class=xl6918916 width=55 style='width:41pt'>11:35 to 12:15</td>
+                    <td class=xl7018916><span class="BL">BL</span></td>
+                    <td class=xl7118916 width=61 style='width:46pt'>11:35 to 12:15</td>
+                    <td class=xl7218916 style='border-left:none'><span class="DL">DL</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl10718916 style='height:69.0pt;border-top:
+                none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=63 style='border-bottom:1.0pt solid black;
+                border-top:none;width:47pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+                border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=56 style='border-bottom:1.0pt solid black;
+                border-top:none;width:42pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+                border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=55 style='border-bottom:1.0pt solid black;
+                border-top:none;width:41pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl14218916 style='border-bottom:1.0pt solid black;
+                border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+                border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=61 style='border-bottom:1.0pt solid black;
+                border-top:none;width:46pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                border-top:none'>LUNCH</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>12:30 to 1:20</td>
+                    <td rowspan=2 class=xl13318916 style='border-bottom:1.0pt solid black;
+                border-top:none'>MEETING</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=3 height=138 class=xl8518916 style='border-bottom:.5pt solid black;
+                height:103.5pt'>5</td>
+                    <td class=xl7318916 width=63 style='border-top:none;width:47pt'>12:55 to 1:35</td>
+                    <td class=xl7418916 style='border-top:none;border-left:none'><span class="EL">EL</span></td>
+                    <td rowspan=2 class=xl10018916 style='border-bottom:1.0pt solid black;
+                border-top:none'>5</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:.5pt solid black;
+                border-top:none;width:42pt'>12:55 to 1:45</td>
+                    <td rowspan=2 class=xl15418916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="G3">G3</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:.5pt solid black;
+                border-top:none'>5</td>
+                    <td class=xl7318916 width=55 style='border-top:none;width:41pt'>12:55 to 1:35</td>
+                    <td class=xl7518916 style='border-top:none;border-left:none'><span class="FL">FL</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:.5pt solid black;
+                border-top:none'>5</td>
+                    <td class=xl7618916 width=61 style='border-top:none;width:46pt'>12:55 to 1:35</td>
+                    <td class=xl7718916 style='border-top:none;border-left:none'><span class="GL">GL</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>5</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>1:25 to 2:15</td>
+                    <td rowspan=2 class=xl13418916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="E1">E1</span></td>
+                    <td rowspan=2 class=xl10918916 width=63 style='border-bottom:1.0pt solid black;
+                width:47pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl13418916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="E2">E2</span></td>
+                    <td rowspan=2 class=xl10918916 width=55 style='border-bottom:1.0pt solid black;
+                width:41pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl14318916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="F4">F4</span></td>
+                    <td rowspan=2 class=xl13618916 width=61 style='border-bottom:1.0pt solid black;
+                width:46pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl12518916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="G5">G5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl10318916 style='border-bottom:.5pt solid black;
+                height:69.0pt'>6</td>
+                    <td rowspan=2 class=xl15618916 width=56 style='border-bottom:.5pt solid black;
+                width:42pt'>1:50 to 2:40</td>
+                    <td rowspan=2 class=xl15518916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="E3">E3</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>6</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>2:20 to 3:10</td>
+                    <td rowspan=2 class=xl10818916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="F1">F1</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+                border-top:none'>6</td>
+                    <td rowspan=2 class=xl10918916 width=63 style='border-bottom:1.0pt solid black;
+                width:47pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl15418916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="G2">G2</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+                border-top:none'>6</td>
+                    <td rowspan=2 class=xl10918916 width=55 style='border-bottom:1.0pt solid black;
+                width:41pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl14618916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="G4">G4</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+                border-top:none'>6</td>
+                    <td rowspan=2 class=xl13618916 width=61 style='border-bottom:1.0pt solid black;
+                width:46pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl12718916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="F5">F5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl9618916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>7</td>
+                    <td rowspan=2 class=xl15818916 width=56 style='border-bottom:.5pt solid black;
+                border-top:none;width:42pt'>2:45 to 3:35</td>
+                    <td rowspan=2 class=xl10118916 style='border-top:none'><span class="F3">F3</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:69.0pt;border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                border-top:none;width:43pt'>3:15 to 4:05</td>
+                    <td rowspan=2 class=xl13518916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="G1">G1</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+                border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                border-top:none;width:47pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl14318916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="F2">F2</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+                border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                border-top:none;width:41pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl13718916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="E4">E4</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+                border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                border-top:none;width:46pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl13718916 style='border-bottom:1.0pt solid black;
+                border-top:none'><span class="E5">E5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td height=46 class=xl7818916 style='height:34.5pt'>&nbsp;</td>
+                    <td class=xl7918916 width=56 style='border-top:none;width:42pt'>3:40 - 4:20</td>
+                    <td class=xl8018916 style='border-left:none'>Meeting</td>
+                </tr>
+                <tr height=23 style='mso-height-source:userset;height:17.25pt'>
+                    <td height=23 class=xl6418916 style='height:17.25pt'></td>
+                    <td colspan=14 rowspan=2 class=xl15918916 width=1155 style='width:869pt'></td>
+                </tr>
+                <tr height=23 style='mso-height-source:userset;height:17.25pt'>
+                    <td height=23 class=xl6418916 style='height:17.25pt'></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=9 height=334 class=xl12918916 width=36 style='border-bottom:1.0pt solid black;
+                height:250.5pt;width:27pt'>E V E N I N G</td>
+                    <td class=xl8118916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=190 style='border-right:1.0pt solid black;
+                border-left:none;width:143pt'>MONDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=182 style='border-right:1.0pt solid black;
+                width:137pt'>TUESDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=174 style='border-right:1.0pt solid black;
+                width:131pt'>WEDNESDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=183 style='border-right:1.0pt solid black;
+                width:138pt'>THURSDAY</td>
+                    <td colspan=2 rowspan=9 class=xl13818916 width=195 style='border-right:1.0pt solid black;
+                border-bottom:1.0pt solid black;width:147pt'>&nbsp;</td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                    <td rowspan=4 height=144 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:108.0pt;border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=56 style='border-bottom:1.0pt solid black;
+                border-top:none;width:42pt'><span class="H1">H1</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=137 style='border-bottom:1.0pt solid black;
+                border-top:none;width:103pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=45 style='border-bottom:1.0pt solid black;
+                border-top:none;width:34pt'><span class="H2">H2</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=40 style='border-bottom:1.0pt solid black;
+                border-top:none;width:30pt'><span class="H3">H3</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=49 style='border-bottom:1.0pt solid black;
+                border-top:none;width:37pt'><span class="H4">H4</span></td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                    <td rowspan=4 height=144 class=xl8518916 style='border-bottom:1.0pt solid black;
+                height:108.0pt;border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=56 style='border-bottom:1.0pt solid black;
+                border-top:none;width:42pt'><span class="I1">I1</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=137 style='border-bottom:1.0pt solid black;
+                border-top:none;width:103pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=45 style='border-bottom:1.0pt solid black;
+                border-top:none;width:34pt'><span class="I2">I2</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=40 style='border-bottom:1.0pt solid black;
+                border-top:none;width:30pt'><span class="I3">I3</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=49 style='border-bottom:1.0pt solid black;
+                border-top:none;width:37pt'><span class="I4">I4</span></td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <![if supportMisalignedColumns]>
+                <tr height=0 style='display:none'>
+                    <td width=36 style='width:27pt'></td>
+                    <td width=57 style='width:43pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=56 style='width:42pt'></td>
+                    <td width=63 style='width:47pt'></td>
+                    <td width=137 style='width:103pt'></td>
+                    <td width=45 style='width:34pt'></td>
+                    <td width=56 style='width:42pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=40 style='width:30pt'></td>
+                    <td width=55 style='width:41pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=49 style='width:37pt'></td>
+                    <td width=61 style='width:46pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                </tr>
+                <![endif]>
+            </table>
+
+        </div>
+        <div id="Timetable 2018-19 - MyNCSSM_18916" align=center x:publishsource="Excel" class="timetable3" hidden>
+
+            <table border=0 cellpadding=0 cellspacing=0 width=1191 style='border-collapse:
+                    collapse;table-layout:fixed;width:896pt' class="table3">
+                <col width=36 style='mso-width-source:userset;mso-width-alt:1316;width:27pt'>
+                <col width=57 style='mso-width-source:userset;mso-width-alt:2084;width:43pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=56 style='mso-width-source:userset;mso-width-alt:2048;width:42pt'>
+                <col width=63 style='mso-width-source:userset;mso-width-alt:2304;width:47pt'>
+                <col width=137 style='mso-width-source:userset;mso-width-alt:5010;width:103pt'>
+                <col width=45 style='mso-width-source:userset;mso-width-alt:1645;width:34pt'>
+                <col width=56 style='mso-width-source:userset;mso-width-alt:2048;width:42pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=40 style='mso-width-source:userset;mso-width-alt:1462;width:30pt'>
+                <col width=55 style='mso-width-source:userset;mso-width-alt:2011;width:41pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <col width=49 style='mso-width-source:userset;mso-width-alt:1792;width:37pt'>
+                <col width=61 style='mso-width-source:userset;mso-width-alt:2230;width:46pt'>
+                <col width=134 style='mso-width-source:userset;mso-width-alt:4900;width:101pt'>
+                <tr height=48 style='mso-height-source:userset;height:36.0pt'>
+                    <td colspan=15 height=48 class=xl15018916 width=1191 style='height:36.0pt;
+                    width:896pt'>Trimester 3 Schedule</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td colspan=3 height=46 class=xl15118916 style='border-right:.5pt solid black;
+                    height:34.5pt'>MONDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+                    border-left:none'>TUESDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+                    border-left:none'>WEDNESDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:.5pt solid black;
+                    border-left:none'>THURSDAY</td>
+                    <td colspan=3 class=xl12018916 style='border-right:1.0pt solid black;
+                    border-left:none'>FRIDAY</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td colspan=2 height=46 class=xl11818916 style='border-right:.5pt solid black;
+                    height:34.5pt'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                    <td colspan=2 class=xl11818916 style='border-right:.5pt solid black'>TIME</td>
+                    <td class=xl6318916>&nbsp;</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl14918916 style='border-bottom:1.0pt solid black'><span class="A1">A1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:47pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl9018916 style='border-bottom:1.0pt solid black'><span class="C2">C2</span></td>
+                    <td rowspan=2 class=xl10018916 style='border-bottom:.5pt solid black;
+                    border-top:none'>1</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:42pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl15218916 style='border-bottom:1.0pt solid black'><span class="B3">B3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:41pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl14818916 style='border-bottom:1.0pt solid black'><span class="D4">D4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>1</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:46pt'>8:00 to 8:50</td>
+                    <td rowspan=2 class=xl12618916 style='border-bottom:1.0pt solid black'><span class="A5">A5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl16118916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="B1">B1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:47pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl15318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="D2">D2</span></td>
+                    <td rowspan=2 class=xl9618916 style='border-bottom:.5pt solid black;
+                    border-top:none'>2</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:42pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl12218916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="A3">A3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:41pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl14718916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="C4">C4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>2</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:46pt'>8:55 to 9:45</td>
+                    <td rowspan=2 class=xl14518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="B5">B5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl16218916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="C1">C1</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:47pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl15218916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="B2">B2</span></td>
+                    <td rowspan=2 class=xl9618916 style='border-top:none'>3</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:42pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl9818916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="D3">D3</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:41pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl14418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="A4">A4</span></td>
+                    <td rowspan=2 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>3</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:46pt'>9:50 to 10:40</td>
+                    <td rowspan=2 class=xl12318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="C5">C5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>4</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl13218916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="D1">D1</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>4</td>
+                    <td rowspan=2 class=xl16018916 width=63 style='border-bottom:.5pt solid black;
+                    border-top:none;width:47pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl8818916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="A2">A2</span></td>
+                    <td rowspan=3 class=xl10018916 style='border-bottom:1.0pt solid black'>4</td>
+                    <td rowspan=2 class=xl9218916 width=56 style='border-bottom:.5pt solid black;
+                    border-top:none;width:42pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl9018916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="C3">C3</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>4</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:.5pt solid black;
+                    border-top:none;width:41pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl14518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="B4">B4</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>4</td>
+                    <td rowspan=2 class=xl9418916 width=61 style='border-bottom:.5pt solid black;
+                    border-top:none;width:46pt'>10:45 to 11:35</td>
+                    <td rowspan=2 class=xl9818916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="D5">D5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>11:35 to 12:30</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>LUNCH</td>
+                    <td class=xl6518916 width=63 style='border-top:none;width:47pt'>11:35 to 12:15</td>
+                    <td class=xl6618916 style='border-left:none'><span class="AL">AL</span></td>
+                    <td class=xl6718916 width=56 style='width:42pt'>11:35 to 12:15</td>
+                    <td class=xl6818916><span class="CL">CL</span></td>
+                    <td class=xl6918916 width=55 style='width:41pt'>11:35 to 12:15</td>
+                    <td class=xl7018916><span class="BL">BL</span></td>
+                    <td class=xl7118916 width=61 style='width:46pt'>11:35 to 12:15</td>
+                    <td class=xl7218916 style='border-left:none'><span class="DL">DL</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl10718916 style='height:69.0pt;border-top:
+                    none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=63 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:47pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=56 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:42pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=55 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:41pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl14218916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>LUNCH</td>
+                    <td rowspan=2 class=xl10718916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl13018916 width=61 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:46pt'>12:15 to 12:55</td>
+                    <td rowspan=2 class=xl12418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>LUNCH</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>&nbsp;</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>12:30 to 1:20</td>
+                    <td rowspan=2 class=xl13318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>MEETING</td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=3 height=138 class=xl8518916 style='border-bottom:.5pt solid black;
+                    height:103.5pt'>5</td>
+                    <td class=xl7318916 width=63 style='border-top:none;width:47pt'>12:55 to 1:35</td>
+                    <td class=xl7418916 style='border-top:none;border-left:none'><span class="EL">EL</span></td>
+                    <td rowspan=2 class=xl10018916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>5</td>
+                    <td rowspan=2 class=xl9418916 width=56 style='border-bottom:.5pt solid black;
+                    border-top:none;width:42pt'>12:55 to 1:45</td>
+                    <td rowspan=2 class=xl15418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="G3">G3</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:.5pt solid black;
+                    border-top:none'>5</td>
+                    <td class=xl7318916 width=55 style='border-top:none;width:41pt'>12:55 to 1:35</td>
+                    <td class=xl7518916 style='border-top:none;border-left:none'><span class="FL">FL</span></td>
+                    <td rowspan=3 class=xl8518916 style='border-bottom:.5pt solid black;
+                    border-top:none'>5</td>
+                    <td class=xl7618916 width=61 style='border-top:none;width:46pt'>12:55 to 1:35</td>
+                    <td class=xl7718916 style='border-top:none;border-left:none'><span class="GL">GL</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>5</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>1:25 to 2:15</td>
+                    <td rowspan=2 class=xl13418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="E1">E1</span></td>
+                    <td rowspan=2 class=xl10918916 width=63 style='border-bottom:1.0pt solid black;
+                    width:47pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl13418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="E2">E2</span></td>
+                    <td rowspan=2 class=xl10918916 width=55 style='border-bottom:1.0pt solid black;
+                    width:41pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl14318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="F4">F4</span></td>
+                    <td rowspan=2 class=xl13618916 width=61 style='border-bottom:1.0pt solid black;
+                    width:46pt'>1:35 to 2:25</td>
+                    <td rowspan=2 class=xl12518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="G5">G5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl10318916 style='border-bottom:.5pt solid black;
+                    height:69.0pt'>6</td>
+                    <td rowspan=2 class=xl15618916 width=56 style='border-bottom:.5pt solid black;
+                    width:42pt'>1:50 to 2:40</td>
+                    <td rowspan=2 class=xl15518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="E3">E3</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>6</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>2:20 to 3:10</td>
+                    <td rowspan=2 class=xl10818916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="F1">F1</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+                    border-top:none'>6</td>
+                    <td rowspan=2 class=xl10918916 width=63 style='border-bottom:1.0pt solid black;
+                    width:47pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl15418916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="G2">G2</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+                    border-top:none'>6</td>
+                    <td rowspan=2 class=xl10918916 width=55 style='border-bottom:1.0pt solid black;
+                    width:41pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl14618916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="G4">G4</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:.5pt solid black;
+                    border-top:none'>6</td>
+                    <td rowspan=2 class=xl13618916 width=61 style='border-bottom:1.0pt solid black;
+                    width:46pt'>2:30 to 3:20</td>
+                    <td rowspan=2 class=xl12718916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="F5">F5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl9618916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>7</td>
+                    <td rowspan=2 class=xl15818916 width=56 style='border-bottom:.5pt solid black;
+                    border-top:none;width:42pt'>2:45 to 3:35</td>
+                    <td rowspan=2 class=xl10118916 style='border-top:none'><span class="F3">F3</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=2 height=92 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:69.0pt;border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=57 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:43pt'>3:15 to 4:05</td>
+                    <td rowspan=2 class=xl13518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="G1">G1</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=63 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:47pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl14318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="F2">F2</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=55 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:41pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl13718916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="E4">E4</span></td>
+                    <td rowspan=2 class=xl8318916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>7</td>
+                    <td rowspan=2 class=xl9218916 width=61 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:46pt'>3:25 to 4:15</td>
+                    <td rowspan=2 class=xl13718916 style='border-bottom:1.0pt solid black;
+                    border-top:none'><span class="E5">E5</span></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td height=46 class=xl7818916 style='height:34.5pt'>&nbsp;</td>
+                    <td class=xl7918916 width=56 style='border-top:none;width:42pt'>3:40 - 4:20</td>
+                    <td class=xl8018916 style='border-left:none'>Meeting</td>
+                </tr>
+                <tr height=23 style='mso-height-source:userset;height:17.25pt'>
+                    <td height=23 class=xl6418916 style='height:17.25pt'></td>
+                    <td colspan=14 rowspan=2 class=xl15918916 width=1155 style='width:869pt'></td>
+                </tr>
+                <tr height=23 style='mso-height-source:userset;height:17.25pt'>
+                    <td height=23 class=xl6418916 style='height:17.25pt'></td>
+                </tr>
+                <tr height=46 style='mso-height-source:userset;height:34.5pt'>
+                    <td rowspan=9 height=334 class=xl12918916 width=36 style='border-bottom:1.0pt solid black;
+                    height:250.5pt;width:27pt'>E V E N I N G</td>
+                    <td class=xl8118916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=190 style='border-right:1.0pt solid black;
+                    border-left:none;width:143pt'>MONDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=182 style='border-right:1.0pt solid black;
+                    width:137pt'>TUESDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=174 style='border-right:1.0pt solid black;
+                    width:131pt'>WEDNESDAY</td>
+                    <td class=xl8218916>&nbsp;</td>
+                    <td colspan=2 class=xl11618916 width=183 style='border-right:1.0pt solid black;
+                    width:138pt'>THURSDAY</td>
+                    <td colspan=2 rowspan=9 class=xl13818916 width=195 style='border-right:1.0pt solid black;
+                    border-bottom:1.0pt solid black;width:147pt'>&nbsp;</td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                    <td rowspan=4 height=144 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:108.0pt;border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=56 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:42pt'><span class="H1">H1</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=137 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:103pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=45 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:34pt'><span class="H2">H2</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=40 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:30pt'><span class="H3">H3</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>8</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:101pt'>6:15pm to 7:55pm</td>
+                    <td rowspan=4 class=xl11518916 width=49 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:37pt'><span class="H4">H4</span></td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                    <td rowspan=4 height=144 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    height:108.0pt;border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=56 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:42pt'><span class="I1">I1</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=137 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:103pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=45 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:34pt'><span class="I2">I2</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=40 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:30pt'><span class="I3">I3</span></td>
+                    <td rowspan=4 class=xl8518916 style='border-bottom:1.0pt solid black;
+                    border-top:none'>9</td>
+                    <td rowspan=4 class=xl11218916 width=134 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:101pt'>8:05pm to 9:45pm</td>
+                    <td rowspan=4 class=xl11018916 width=49 style='border-bottom:1.0pt solid black;
+                    border-top:none;width:37pt'><span class="I4">I4</span></td>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <tr height=36 style='mso-height-source:userset;height:27.0pt'>
+                </tr>
+                <![if supportMisalignedColumns]>
+                <tr height=0 style='display:none'>
+                    <td width=36 style='width:27pt'></td>
+                    <td width=57 style='width:43pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=56 style='width:42pt'></td>
+                    <td width=63 style='width:47pt'></td>
+                    <td width=137 style='width:103pt'></td>
+                    <td width=45 style='width:34pt'></td>
+                    <td width=56 style='width:42pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=40 style='width:30pt'></td>
+                    <td width=55 style='width:41pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                    <td width=49 style='width:37pt'></td>
+                    <td width=61 style='width:46pt'></td>
+                    <td width=134 style='width:101pt'></td>
+                </tr>
+                <![endif]>
+            </table>
+
+        </div>
+
+        <button id='authorize_button'>Export to Google Calendar</button>
+        <button onclick='getConflicts()'>Reset Your Calendar</button>
+
+        <br><br>
+        <div style='text-align: right;'>Found a bug? <a href='mailto:hiner21s@ncssm.edu'>Let me know!</a> Also, here is the <a href='/privacy'>Privacy Policy</a></div>
+    </div>
+    <div id='loadingScreen'>Loading</div>
+    <div id='loadingBackground'></div>
+    <script>
+        //set up sliders to responsively update when changed
+        var gradeInputs = document.getElementsByName('gradeInput');
+
+        for (var x = 0; x < 3; x++) {
+            gradeInputs[x].oninput = function() {
+                updateGPA();
+            }
+        }
+
+        accessLocalStorage();
+    </script>
+    <script>
+        $("form").submit(function() {
+            return false;
+        });
+    </script>
+    <script src='{{url_for("static",filename = "assets/datalist.polyfill.min.js")}}'></script>
+    <!--script from google for Google Calendar integration-->
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <script src='{{url_for("static",filename="gcal_code.js")}}'></script>
+</body>
+
+</html>
