@@ -104,8 +104,6 @@ function get_validity() {
         console.log(data2);
         data = data2[0]
         sched = data2[1]
-        $("#avgGPA").html(data2[2])
-        $("#timePerWeek").html(data2[3])
         $("#possib").html(data2[4])
         manual = data[5];
         console.log(data);
@@ -118,12 +116,14 @@ function get_validity() {
                 document.getElementById('t' + i + 'ConflictDisplay').style.backgroundColor = "#ee9090";
             }
         }
+
         keys = ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5", "C1", "C2", "C3", "C4", "C5", "D1", "D2", "D3", "D4", "D5", "E1", "E2", "E3", "E4", "E5", "F1", "F2", "F3", "F4", "F5", "G1", "G2", "G3", "G4", "G5", "H1", "H2", "H3", "H4", "I1", "I2", "I3", "I4", "AL", "BL", "CL", "DL", "EL", "FL", "GL"]
         if (data[0] && data[1] && data[2]) {
-            $('#calbuttons').attr('hidden', false);
-            $('#authorize_button').attr('hidden', false);
-            $('hr').attr('hidden', false);
-            $('#yourcal').attr('hidden', false);
+            $('#calbuttons').attr('hidden', true);
+            $('#authorize_button').attr('hidden', true);
+            $('hr').attr('hidden', true);
+            $('#yourcal').attr('hidden', true);
+            hideall();
             for (let i = 0; i < keys.length; i++) {
                 classes = document.getElementsByClassName(keys[i]);
                 classes[0].innerHTML = sched[0][keys[i]];
@@ -137,10 +137,18 @@ function get_validity() {
             $('#yourcal').attr('hidden', true);
             hideall();
         }
+
+
+        //code to handle calendar questions
+        setGPA();
+        perWeekStats(data2[5]);
+        setupCalendarQuestions(data2[5]);
     });
+
+
 }
 
-function addResults(conflicts, times, possSchedules, doCalendar = true) {
+/*function addResults(conflicts, times, possSchedules, doCalendar = true) {
     console.log(conflicts)
     console.log(times)
 
@@ -174,20 +182,20 @@ function addResults(conflicts, times, possSchedules, doCalendar = true) {
     if (doCalendar) {
         setupCalendarQuestions(times.slice(0));
     }
-}
+}*/
 
 function setGPA() {
+
     window.classNumbers = { '300': 0, '350': 0, '400': 0 };
     var classCode;
 
     //this is similar to above for, maybe make the loop a function with a function param
     //collect data about the classes that the user inputted
     for (var tri = 1; tri <= 3; tri++) {
-        var classChoiceInputs = document.getElementsByName('tri' + tri + 'Choice');
-        for (var x = 0; x < classChoiceInputs.length; x++) {
-            //get the first word- the class code- of each selected class
-            if (classChoiceInputs[x].value != '') {
-                classCode = classChoiceInputs[x].value.split(' ')[0]
+        var classChoiceInputs = $('input[name^="tri' + tri + 'Choice"]').each(function() {
+            console.log(this)
+            if (this.value != '') {
+                classCode = this.value.split(' ')[0]
 
                 if (classCode[2] == '3' && Number(classCode[3]) < 5) {
                     window.classNumbers['300'] += 1;
@@ -197,6 +205,10 @@ function setGPA() {
                     window.classNumbers['400'] += 1;
                 }
             }
+        })
+        for (var x = 0; x < classChoiceInputs.length; x++) {
+            //get the first word- the class code- of each selected class
+            
         }
     }
 
@@ -229,6 +241,7 @@ function updateGPA() {
         document.getElementById('avgGPA').innerHTML = 'You have ' + totalClasses + ' classes but ' + numGrades + ' grades.'
     }
 }
+
 
 function accessLocalStorage() {
     if (localStorage.getItem('inputtedClasses') != null) {
@@ -285,13 +298,10 @@ function perWeekStats(times) {
     timeOutput.innerHTML = '';
     classOutput.innerHTML = '';
     for (var tri = 0; tri < 3; tri++) {
-        if (document.getElementById('conflictArea').childNodes[tri * 2 + 1].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
-            continue;
-        }
         minutesPerWeek = 0;
         classesPerWeek = 0;
-        for (key in times[0]) {
-            classSchedule = times[0][key][0]
+        for (key in times[tri]) {
+            classSchedule = times[tri][key][0]
             for (x in classSchedule) {
                 if (classSchedule[x] == 'L') {
                     minutesPerWeek += 40;
@@ -301,7 +311,6 @@ function perWeekStats(times) {
                 }
             }
         }
-        times.shift();
         timeOutput.innerHTML += 'T' + (Number(tri) + 1) + ': ' + Math.floor(minutesPerWeek / 60) + 'h ' + (minutesPerWeek % 60) + 'm';
         classOutput.innerHTML += 'T' + (Number(tri) + 1) + ': ' + classesPerWeek + ' classes';
 
@@ -320,75 +329,61 @@ function setupCalendarQuestions(times) {
     window.times = times;
 
     window.qNum = 1;
-    window.colors = []
 
-    enterQuestion(['Trimester 1', 'Trimester 2', 'Trimester 3'])
+    enterQuestion(['Auto Generate Schedule', 'Manually Pick Meeting Patterns'])
 }
 
 function getCalendarQuestions(answer, num) {
     if (window.qNum == 1) {
-        var answer = document.querySelector('input[name="scheduleQ"]:checked').value;
-        var blankConstant = 1;
-        if (document.getElementById('conflictArea').childNodes[1].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
-            blankConstant++;
-            if (document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') {
-                blankConstant++;
-            }
-        } else if (Number(answer.substr(-1)) == 3 && document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') {
-            blankConstant++;
+        var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
+        if (selectedOption == 'Auto Generate Schedule') {
+
+            $('#calbuttons').attr('hidden', false);
+            $('#authorize_button').attr('hidden', false);
+            $('hr').attr('hidden', false);
+            $('#yourcal').attr('hidden', false);
+            document.getElementById('qWrapper').style.display = 'none';
+
+            //endCalendarQuestions();
+            return;
+        } else {
+            window.qNum++
+            enterQuestion(['Trimester 1', 'Trimester 2', 'Trimester 3'])
         }
-
-        console.log(window.possSchedules)
-        console.log(window.possSchedules['3'])
-        console.log(answer.substr(-1))
-
-        window.times = window.times[Number(answer.substr(-1)) - blankConstant];
-        window.possSchedules = window.possSchedules[answer.substr(-1)];
-        window.keyOrder = Object.keys(window.times);
-
-        console.log('FUCK')
-        console.log(window.times)
-        console.log(window.possSchedules)
-        console.log(window.keyOrder)
-
-        window.qNum++;
-        enterQuestion(['Auto Generate Schedule', 'Manually Pick Meeting Patterns']);
     } else {
         if (window.qNum == 2) {
-            var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
-            if (selectedOption == 'Auto Generate Schedule') {
-                window.keyOrder = [];
-                window.times = {};
-                window.colors = ['#00FFFF', '#FF0000', '#FFFF00', '#00FF00', '#FF00FF', '#FF8C00', '#800000', '#4B0082'];
-
-                for (var key in window.possSchedules) {
-                    window.keyOrder.push(key)
-                    window.times[key] = window.possSchedules[key]
+            var answer = document.querySelector('input[name="scheduleQ"]:checked').value;
+            var blankConstant = 1;
+            if (document.getElementById('conflictArea').childNodes[1].innerText == 'Conflict Unknown') { //this means "if conflict unknown"
+                blankConstant++;
+                if (document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') {
+                    blankConstant++;
                 }
-
-                if (window.colors.length < window.keyOrder.length) {
-                    var diffLen = window.keyOrder.length - window.colors.length;
-                    for (var x = 0; x < diffLen; x++) {
-                        window.colors.push(window.colors[x])
-                    }
-                }
-
-                endCalendarQuestions();
-                return;
-            } else {
-                window.qNum++
+            } else if (Number(answer.substr(-1)) == 3 && document.getElementById('conflictArea').childNodes[3].innerText == 'Conflict Unknown') {
+                blankConstant++;
             }
+
+
+            window.times = window.times[Number(answer.substr(-1)) - blankConstant];
+
+            window.qNum++;
+
         } else {
             var selectedOption = document.querySelector('input[name="scheduleQ"]:checked').value;
-            window.times[window.keyOrder[window.qNum - 3]] = selectedOption; //-1 for index difference and -2 to account for first 2 questions
-            window.colors.push(document.getElementById('courseColor').value)
+            window.times[Object.keys(window.times)[window.qNum - 3]] = selectedOption; //-1 for index difference and -2 to account for first 2 questions
             window.qNum++;
         }
-        var nextQArr = window.times[window.keyOrder[window.qNum - 3]]
+        var nextQArr = window.times[Object.keys(window.times)[window.qNum - 3]]
         if (nextQArr != undefined) {
             enterQuestion(nextQArr)
         } else {
-            endCalendarQuestions();
+            
+            $('#calbuttons').attr('hidden', false);
+            $('#authorize_button').attr('hidden', false);
+            $('hr').attr('hidden', false);
+            $('#yourcal').attr('hidden', false);
+            document.getElementById('qWrapper').style.display = 'none';
+
             return;
         }
     }
@@ -402,7 +397,7 @@ function enterQuestion(qArr) {
     if (qArr[0] == 'Trimester 1') {
         document.getElementById('qArea').innerHTML += 'Which trimester do you want a calendar for?<br>';
         for (x in qArr) {
-            document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '"' + (document.getElementById('t' + qArr[x].substr(-1) + 'ConflictDisplay').innerText != 'No Conflict' ? 'disabled' : '') + '>' + qArr[x] + '</option><br>';
+            document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '"' + (document.getElementById('t' + qArr[x].substr(-1) + 'ConflictDisplay').innerText != 'No Conflicts' ? 'disabled' : '') + '>' + qArr[x] + '</option><br>';
         }
     } else if (qArr[0] == 'Auto Generate Schedule') {
         document.getElementById('qArea').innerHTML += 'Do you know your course meeting patterns and want an accurate schedule or do you want to auto generate a possible schedule with your classes?<br>';
@@ -410,7 +405,7 @@ function enterQuestion(qArr) {
             document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
         }
     } else {
-        document.getElementById('qArea').innerHTML += 'Choose when you are taking <b>' + window.keyOrder[window.qNum - 3] + '</b>. Also, choose the color you want for that course <input id="courseColor" type="color" value="' + colorPalette[(window.qNum - 3) % colorPalette.length] + '"><br>';
+        document.getElementById('qArea').innerHTML += 'Choose when you are taking <b>' + Object.keys(window.times)[window.qNum - 3] + '</b>. Also, choose the color you want for that course <input id="courseColor" type="color" value="' + colorPalette[(window.qNum - 3) % colorPalette.length] + '"><br>';
         for (x in qArr) {
             document.getElementById('qArea').innerHTML += '<input type="radio" name="scheduleQ" value="' + qArr[x] + '">' + qArr[x] + '</option><br>';
         }

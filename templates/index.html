@@ -107,8 +107,8 @@ don't have class events during breaks in gcal
     </table>
     <div class='stats'><br><br> Number of Classes Each Week
         <span style='float:right;' id='classesPerWeek'>N/A</span><br><br> Time Spent in Class Each Week<span style='float:right; text-align: right;' id='timePerWeek'>N/A</span><br><br><br>
-        <details>
-            <summary>Maximum GPA This Year<span style='float:right;' id='avgGPA'>N/A</span><br><br></summary>
+        <details open>
+            <summary>Average GPA This Year<span style='float:right;' id='avgGPA'>N/A</span><br><br></summary>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expected A Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expected B Grades:
             <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput' disabled><br><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expected C Grades: <input type='number' style='width: 51px; float: right;' value='0' name='gradeInput'
                 disabled><br><br>
@@ -121,10 +121,10 @@ don't have class events during breaks in gcal
             <!--<button onclick="printer();">Print!</button>--></button>
         </div><br>
 
-        <!-- <div id='qWrapper' style='display: none; border: 1px solid black;'> -->
-        <!-- <div id='qArea'></div> -->
-        <!-- <button onclick='getCalendarQuestions()'>Next Question</button> -->
-        <!-- </div><br> -->
+        <div id='qWrapper' style='display: none; border: 1px solid black;'>
+        <div id='qArea'></div>
+        <button onclick='getCalendarQuestions()'>Next Question</button>
+        </div><br>
 
         <div id="Timetable 2018-19 - MyNCSSM_18916" align=center x:publishsource="Excel" class="timetable1" hidden>
 
