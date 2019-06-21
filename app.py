@@ -85,15 +85,15 @@ def home():
         tri1_meetings = [open(f'Schedule/Trimester1/{i}.txt', 'r').read().splitlines()[1:]  for i in classes[0]]
         tri2_meetings = [open(f'Schedule/Trimester2/{i}.txt', 'r').read().splitlines()[1:] for i in classes[1]]
         tri3_meetings = [open(f'Schedule/Trimester3/{i}.txt', 'r').read().splitlines()[1:] for i in classes[2]]
-        # meetings = [tri1_meetings, tri2_meetings, tri3_meetings]
-        # manual = [{},{},{}]
-        # for i in range(3):
-        #     manual[i].update([k for k in zip(classes[i], meetings[i])])
-        # print(manual)
-        # print(tri1_meetings)
-        # print('\n'.join([repr([parseSchedule(x) for x in i]) for i in tri1_meetings]))
-        # print([list(i) for i in product(*tri1_meetings)])
-        # print([safe(x) for x in product(*tri1_meetings)])
+        meetings = [tri1_meetings, tri2_meetings, tri3_meetings]
+        manual = [{},{},{}]
+        for i in range(3):
+            manual[i].update([k for k in zip(classes[i], meetings[i])])
+        print(manual)
+        print(tri1_meetings)
+        print('\n'.join([repr([parseSchedule(x) for x in i]) for i in tri1_meetings]))
+        print([list(i) for i in product(*tri1_meetings)])
+        print([safe(x) for x in product(*tri1_meetings)])
         tris = [map(safe,product(*tri1_meetings)), map(safe,product(*tri2_meetings)),map(safe,product(*tri3_meetings))]
         tri1_success = any(tris[0])
         tri2_success = any(tris[1])
@@ -313,7 +313,7 @@ def home():
         gpa = str(round(gpa,2))
         gpa = gpa if('.' in gpa) else gpa + '.0'
         # print([success, schedule2, gpa, n, numpos, manual])
-        return dumps([success, schedule2, gpa, n, numpos])
+        return dumps([success, schedule2, gpa, n, numpos, manual])
 
 if __name__ == "__main__":
     app.run(debug = True)

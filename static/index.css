@@ -146,6 +146,18 @@ h1 {
     mso-displayed-thousand-separator: "\,";
 }
 
+.H1,
+.H2,
+.H3,
+.H4,
+.I1,
+.I2,
+.I3,
+.I4 {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
 .xl1518916 {
     padding-top: 1px;
     padding-right: 1px;
