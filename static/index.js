@@ -78,6 +78,7 @@ function deleteRow() {
 }
 
 function get_validity() {
+    // perWeekStats(times.slice(0));
     $.post('/', $('#form').serialize(), (data) => {
         data2 = JSON.parse(data)
         data = data2[0]
