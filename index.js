@@ -9,21 +9,6 @@ function addRow(num = 1) {
 		cloneRow.children[1].firstElementChild.value = '';
 		cloneRow.children[2].firstElementChild.value = '';
 
-		console.log('BBBB')
-		console.log()
-
-
-		cloneRow.children[0].firstElementChild.attributes.list.value = 'tri1Classes' + Date.now();
-		cloneRow.children[0].firstElementChild.nextElementSibling.id = 'tri1Classes' + Date.now();
-		cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
-		cloneRow.children[1].firstElementChild.attributes.list.value = 'tri2Classes' + Date.now();
-		cloneRow.children[1].firstElementChild.nextElementSibling.id = 'tri2Classes' + Date.now();
-		cloneRow.children[1].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
-		cloneRow.children[2].firstElementChild.attributes.list.value = 'tri3Classes' + Date.now();
-		cloneRow.children[2].firstElementChild.nextElementSibling.id = 'tri3Classes' + Date.now();
-		cloneRow.children[2].firstElementChild.nextElementSibling.innerHTML = cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(0, 58) + Date.now() + cloneRow.children[0].firstElementChild.nextElementSibling.innerHTML.slice(58);
-
-
 		table.insertBefore(cloneRow, document.getElementById('tableControls'))
 	}
 }
